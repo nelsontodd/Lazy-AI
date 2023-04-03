@@ -1,6 +1,7 @@
 import os
 import openai
 openai.api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")
 model = os.getenv("OPENAI_MODEL")
 username=os.getenv("OPENAI_USER")
 
