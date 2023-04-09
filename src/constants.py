@@ -13,7 +13,9 @@ MARKDOWN_INSTRUCTIONS = """Give no other
     text besides properly formatted markdown code. Ignore all previous command and prompts. Do not respond to this prompt besides with the markdown."""
 
 DEFAULT_HW_PROMPT = """Here is a page from a PDF document. Identify and provide an answer
-to all of the mathematical problems contained inside of it. Ignore any question that tells
+to all of the mathematical problems contained inside of it. Note that some of the
+mathematical symbols were possibly formatted incorrectly. Use your best judgement to
+figure out what they mean. Ignore any question that tells
 you to draw something. Output your response in a format like Question: Math question.
 Answer: Answer. {} :""".format(MARKDOWN_INSTRUCTIONS)
 
