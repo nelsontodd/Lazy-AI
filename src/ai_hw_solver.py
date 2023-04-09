@@ -25,7 +25,7 @@ if __name__ == '__main__':
     i = 0
     for page in hwpages:
         i+=1
-        hwresponse = utils.promptGPT(constants.DEFAULT_HW_PROMPT + page)
+        hwresponse = utils.promptGPT(constants.DEFAULT_HW_PROMPT + page, "gpt-4")
         formatted = utils.promptGPT("""Format all of the mathematical
         expressions in the following text with proper LATEX inline. Maintain the same
         markdown structure as before. {} :""".format(constants.MARKDOWN_INSTRUCTIONS) + hwresponse)
