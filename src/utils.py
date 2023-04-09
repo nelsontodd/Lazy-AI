@@ -92,11 +92,11 @@ def read_pdf(filename):
 def transcribe_audio(audiofile):
     audio_file= open(audiofile, "rb")
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    return transcript
+    return transcriphw1t
 
-def promptGPT(prompt):
+def promptGPT(prompt, model=constants.model):
     response = openai.ChatCompletion.create(
-      model=constants.model,
+      model=model,
       messages=[
         {"role": "user", "content": prompt}])
     return response["choices"][0]["message"]["content"]
