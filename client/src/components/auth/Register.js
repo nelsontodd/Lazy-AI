@@ -22,7 +22,7 @@ const Register = () => {
             const formData = {name, email, password};
 
             try {
-                const res = await axios.post('/api/users', formData);
+                const res = await axios.post('/user', formData);
                 setAuthToken(res.data.token);
                 history.push('/profile');
             } catch (err) {
