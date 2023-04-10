@@ -16,7 +16,7 @@ MARKDOWN_INSTRUCTIONS = """Give no other
 MATH_HW = """Here is a page from a math textbook. Identify and provide a solution
 to all of the mathematical problems contained inside of it. Ignore any question that tells
 you to draw something. Output your response in this format and rewrite identified
-questions to be in full sentences.: "1. Question: Math question.\n Answer: Answer.\n"
+questions to be in full sentences.: "1. Question: Math question. Answer: Answer.\n"
 Number your questions and answers. Answer ALL questions. Output with PROPER LATEX
 and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
 

@@ -13,19 +13,18 @@ from xhtml2pdf import pisa
 from io import StringIO, BytesIO
 
 
-# Create a PDF from the HTML using ReportLab's pisa (HtmlToPdf)
-
-
 if __name__ == '__main__':
-    hwdir, inputhw = "hw/", "non_math_hw"
+    hwdir, inputhw = "hw/", "abi_SPLEM"
     hwpdf = utils.read_pdf(hwdir+inputhw)
     output_filename="outputs/{}.pdf".format(inputhw)
     doc = utils.default_pdf_doc("outputs/temp_qualitative_hw.pdf")
     _items = [utils.pdf_title("SLP Homework"), Spacer(1, 24)]
-    i = 0
     hwresponse = ""
     for page in hwpdf:
-        hwresponse += utils.promptGPT(constants.NON_MATH_HW, page, "gpt-4")
+        print("""Inputting {} tokens into
+                {}.""".format(utils.num_tokens_from_messages(constants.NON_MATH_HW + page,
+                    constants.model)))
+        hwresponse += utils.promptGPT(constants.NON_MATH_HW, page)
     utils.to_md(hwresponse, inputhw)
     utils.pandoc_pdf("outputs/{}".format(inputhw), "outputs/{}".format(inputhw))
     doc.build(_items)
@@ -42,4 +41,4 @@ if __name__ == '__main__':
 
     with open("outputs/{}.pdf".format(inputhw), "wb") as merged_file:
         output_pdf.write(merged_file)
-    print('Notes file generated for file: {}'.format(inputhw))
+    print('Solutions generated for file: {}'.format(inputhw))
