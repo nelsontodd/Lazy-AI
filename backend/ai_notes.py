@@ -24,13 +24,13 @@ if __name__ == '__main__':
     _items = [utils.pdf_title("Zoom Meeting Summary"), Spacer(1, 24)]
 
     if dosummary == True:
-        summaryresponse = utils.promptGPT(constants.DEFAULT_SUMMARY_PROMPT+ "\n "+transcript["text"])
+        summaryresponse = utils.promptGPT(constants.DEFAULT_SUMMARY_PROMPT,transcript["text"])
         _items.append(utils.pdf_subtitle("Executive Summary"))
         _items.append(Spacer(1, 24))
         _items.append(utils.pdf_paragraph(summaryresponse))
         _items.append(Spacer(1, 24))
     if doquiz == True:
-        quizresponse = utils.promptGPT(constants.DEFAULT_QUIZ_PROMPT+ "\n "+transcript["text"])
+        quizresponse = utils.promptGPT(constants.DEFAULT_QUIZ_PROMPT,transcript["text"])
         quizdict = csv.DictReader(StringIO(quizresponse), delimiter="|")
         _items.append(utils.pdf_subtitle("Short Quiz"))
         _items.append(Spacer(1, 24))

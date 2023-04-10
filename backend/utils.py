@@ -1,8 +1,11 @@
 import os
+import time
 import json
+import requests
 import csv
 import openai
 import constants
+import tiktoken
 from datetime import datetime
 from pyxpdf import Document, Page, Config
 from pyxpdf.xpdf import TextControl
@@ -26,8 +29,47 @@ styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
 styles.add(ParagraphStyle(name="Main Title",fontSize=36, leading=30, alignment=TA_CENTER, spaceAfter=20))
 styles.add(ParagraphStyle(name="Sub Title",fontSize=20, leading=30, alignment=TA_CENTER, spaceAfter=20))
 
+#Mathpix 
+options = {
+    "math_inline_delimiters": ["$", "$"],
+    "rm_spaces": True
+}
+headers = {
+        "app_id":  constants.mathpix_app_id,
+        "app_key": constants.mathpix_api_key
+}
+
+def mathpix_post_local_file(filename, _dir="hw/"):
+    pdf_id = requests.post("https://api.mathpix.com/v3/pdf",
+            headers = headers,
+            data={
+            "options_json": json.dumps(options)
+        },
+        files={
+            "file": open(_dir+filename+".pdf","rb")
+        }
+    )
+    pdf_id_text = json.loads(pdf_id.text.encode("utf8"))['pdf_id']
+    print(pdf_id_text)
+    return pdf_id_text
+
+def mathpix_pdf_to_mmd(filename, pdf_id=""):
+    if pdf_id == "":
+        pdf_id = mathpix_post_local_file(filename)
+    url = "https://api.mathpix.com/v3/pdf/" +pdf_id+ ".mmd"
+    conversion_response = requests.get(url, headers=headers)
+    while ('{"status":' in conversion_response.text):
+        time.sleep(2)
+        conversion_response = requests.get(url, headers=headers)
+    final_converted_to_mmd = conversion_response.text
+    with open("outputs/"+filename+".mmd","wb") as mathfile:
+        mathfile.write(final_converted_to_mmd.encode("utf8"))
+    return final_converted_to_mmd
+
+
+
 def pandoc_pdf(_input, _output):
-    command = "pandoc -s {}.md -o {}.pdf".format(_input, _output)
+    command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _output)
     print(os.system(command))
 
 def to_csv(buffer, title):
@@ -92,13 +134,35 @@ def read_pdf(filename):
 def transcribe_audio(audiofile):
     audio_file= open(audiofile, "rb")
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    return transcriphw1t
+    return transcript
 
-def promptGPT(prompt, model=constants.model):
+def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
+  """Returns the number of tokens used by a list of messages."""
+  messages = [{"role":"user", "content":prompttext}]
+  try:
+      encoding = tiktoken.encoding_for_model(model)
+  except KeyError:
+      encoding = tiktoken.get_encoding("cl100k_base")
+  if model == "gpt-3.5-turbo-0301":  # note: future models may deviate from this
+      num_tokens = 0
+      for message in messages:
+          num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
+          for key, value in message.items():
+              num_tokens += len(encoding.encode(value))
+              if key == "name":  # if there's a name, the role is omitted
+                  num_tokens += -1  # role is always required and always 1 token
+      num_tokens += 2  # every reply is primed with <im_start>assistant
+      return num_tokens
+  else:
+      raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
+  See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
+
+def promptGPT(systemprompt, userprompt, model=constants.model):
     response = openai.ChatCompletion.create(
       model=model,
       messages=[
-        {"role": "user", "content": prompt}])
+        {"role": "system", "content": systemprompt},
+        {"role": "user", "content": userprompt}])
     return response["choices"][0]["message"]["content"]
 
 def pdf_unordered_list(_dict, formatstyle=styles):
