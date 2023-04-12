@@ -18,7 +18,7 @@ const Login = () => {
       setAuthToken(res.data.token);
       history.push('/journal');
     } catch (err) {
-      const errorMessage  = err.response.data.errors[0].msg;
+      const errorMessage = err.response.data.message;
       alert(errorMessage);
     }
   }
