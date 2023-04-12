@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import Container from "../utilities/Container";
+import { setAuthToken } from '../../helpers/setAuthToken';
 
 const SignUp = () => {
 
@@ -21,10 +22,11 @@ const SignUp = () => {
       const formData = {name, email, password};
 
       try {
-        await axios.post('/user', formData);
-        history.push('/login');
+        const res = await axios.post('/user', formData);
+        setAuthToken(res.data.token);
+        history.push('/journal');
       } catch (err) {
-        const errorMessage  = err.response.data.errors[0].msg;
+        const errorMessage = err.response.data.message;
         alert(errorMessage);
       }
     }
