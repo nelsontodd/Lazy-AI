@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import Container from './utilities/Container';
 import EntryCard from './utilities/EntryCard';
+import FileUploader from './utilities/FileUploader';
 
 import { formatDates, sortEntries } from '../helpers/entries';
 import { getCookies, isLoggedIn } from '../helpers/setAuthToken';
@@ -62,6 +63,7 @@ const Journal = () => {
   } else {
     return (
       <Container>
+        <FileUploader />
         <div className="row">
           <div className="eight columns">
             <h4>Your Entries:</h4>
