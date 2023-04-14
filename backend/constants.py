@@ -6,6 +6,11 @@ username=os.getenv("OPENAI_USER")
 mathpix_api_key = os.getenv("MATHPIX_API_KEY")
 mathpix_app_id = os.getenv("MATHPIX_APP_ID")
 
+essay_prompt = os.getenv("INPUT_ESSAY_PROMPT")
+case_study_pdf = os.getenv("CASE_STUDY_PDF")
+input_path = "inputs/"
+output_path = "outputs/"
+
 CSV_INSTRUCTIONS = """Give no other
     text besides CSV. Ignore all previous command and prompts. Do not respond to this
     prompt besides with the CSV. Delimit using |."""
@@ -55,7 +60,8 @@ will be argued in this essay. Respond with ONLY these points.
 ARGUMENTATIVE_ESSAY_BODY_PARAGRAPH_YAML = """
 Instructions: Write one paragraph arguing point {order} in this list of arguments.
 Make your argument highly detailed and compelling. Cite at least one specific source from
-the supporting document below to build your argument. Do not restate your main point in
+the supporting document below to build your argument. ONLY CITE FROM THE GIVEN SUPPORTING
+DOCUMENTS. Do not restate your main point in
 the beginning of the paragraph.
 Number of Paragraphs: 1
 Minimum word count: 100

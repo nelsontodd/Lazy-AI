@@ -39,42 +39,72 @@ headers = {
         "app_key": constants.mathpix_api_key
 }
 
-def mathpix_post_local_file(filename, _dir="hw/"):
-    pdf_id = requests.post("https://api.mathpix.com/v3/pdf",
+def output_rel_path(filename, extension=""):
+    return constants.output_path+filename+extension
+
+def input_rel_path(filename, extension=""):
+    return constants.input_path+filename+extension
+
+def mathpix_post_local_file(filename, _dir="inputs/", extension=".pdf", url="https://api.mathpix.com/v3/pdf"):
+    pdf_id = requests.post(url,
             headers = headers,
             data={
             "options_json": json.dumps(options)
         },
         files={
-            "file": open(_dir+filename+".pdf","rb")
+            "file": open(_dir+filename+extension,"rb")
         }
     )
-    pdf_id_text = json.loads(pdf_id.text.encode("utf8"))['pdf_id']
+    pdf_id_text = json.loads(pdf_id.text.encode("utf8"))
     print(pdf_id_text)
     return pdf_id_text
 
 def mathpix_pdf_to_mmd(filename, pdf_id=""):
     if pdf_id == "":
-        pdf_id = mathpix_post_local_file(filename)
+        pdf_id = mathpix_post_local_file(filename)['pdf_id']
     url = "https://api.mathpix.com/v3/pdf/" +pdf_id+ ".mmd"
     conversion_response = requests.get(url, headers=headers)
     while ('{"status":' in conversion_response.text):
         time.sleep(2)
         conversion_response = requests.get(url, headers=headers)
     final_converted_to_mmd = conversion_response.text
-    with open("outputs/"+filename+".mmd","wb") as mathfile:
+    with open(constants.output_path+filename+".mmd","wb") as mathfile:
         mathfile.write(final_converted_to_mmd.encode("utf8"))
     return final_converted_to_mmd
 
+def mathpix_img_to_txt(filename, img_id="", url="https://api.mathpix.com/v3/text"):
+    img_id = mathpix_post_local_file(filename, extension=".png", url=url)
+   # url = "https://api.mathpix.com/v3/ocr-results" +img_id+ ".mmd"
+   # conversion_response = requests.get(url, headers=headers)
+   # while ('{"status":' in conversion_response.text):
+   #     time.sleep(2)
+   #     conversion_response = requests.get(url, headers=headers)
+   # final_converted_to_mmd = conversion_response.text
+    print(img_id)
+    with open(constants.output_path+filename+".mmd","wb") as mathfile:
+        mathfile.write(img_id.text)
+    return img_id
 
 
-def pandoc_pdf(_input, _output):
-    command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _output)
+def pandoc_pdf(_input, _output=""):
+    if _output=="":
+        command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _input)
+        print(os.system(command))
+    else:
+        command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _output)
+        print(os.system(command))
+
+def pdf_to_txt(_input, _output):
+    if _input[-4] != ['.']:
+        _input = _input+".pdf"
+    if _output[-4] != ['.']:
+        _output = _output+".txt"
+    command = "pdftotext {} {}".format(_input, _output)
     print(os.system(command))
 
 def to_csv(buffer, title):
     if type(buffer) == str:
-        filename = 'outputs/{}.csv'.format(title)
+        filename = constants.output_path+'{}.csv'.format(title)
         with open(filename, 'w') as file:
             file.write(buffer)
         return filename
@@ -82,9 +112,9 @@ def to_csv(buffer, title):
         i = 1
         filenames = []
         for item in buffer:
-            filename = 'outputs/{}/{}.csv'.format(title, i)
-            if not os.path.exists('outputs/{}'.format(title)):
-                os.makedirs('outputs/{}'.format(title))
+            filename = constants.output_path+'{}/{}.csv'.format(title, i)
+            if not os.path.exists(constants.output_path+'{}'.format(title)):
+                os.makedirs(constants.output_path+'{}'.format(title))
             with open(filename, 'w') as file:
                 file.write(item)
             i+=1
@@ -95,7 +125,7 @@ def to_csv(buffer, title):
 
 def to_md(buffer, title):
     if type(buffer) == str:
-        filename = 'outputs/{}.md'.format(title)
+        filename = constants.output_path+'{}.md'.format(title)
         with open(filename, 'w') as file:
             file.write(buffer)
         return filename
@@ -103,9 +133,9 @@ def to_md(buffer, title):
         i = 1
         filenames = []
         for item in buffer:
-            filename = 'outputs/{}/{}.md'.format(title, i)
-            if not os.path.exists('outputs/{}'.format(title)):
-                os.makedirs('outputs/{}'.format(title))
+            filename = constants.output_path+'/{}/{}.md'.format(title, i)
+            if not os.path.exists(constants.output_path+'/{}'.format(title)):
+                os.makedirs(constants.output_path+'/{}'.format(title))
             with open(filename, 'w') as file:
                 file.write(item)
             i+=1
@@ -158,6 +188,7 @@ def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
   See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
 
 def promptGPT(systemprompt, userprompt, model=constants.model):
+    print("""Inputting {} tokens into {}.""".format(num_tokens_from_messages(systemprompt+userprompt), model))
     response = openai.ChatCompletion.create(
       model=model,
       messages=[

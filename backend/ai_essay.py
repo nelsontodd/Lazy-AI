@@ -26,13 +26,12 @@ import tempfile
 from reportlab.pdfgen import canvas
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
+from reportlab.platypus import SimpleDocTemplate, Paragraph, ListFlowable, ListItem
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 
-os.environ["SERPAPI_API_KEY"] = "ab9f6989f1bca1e2a64b472ac9e999fa8939cd291fa4673bb0a045476fe29277"
-wikipedia = WikipediaAPIWrapper()
-loader = TextLoader("bkk-case-analysis.txt")
-
+utils.pdf_to_txt(utils.input_rel_path(constants.case_study_pdf), utils.output_rel_path(constants.case_study_pdf))
+loader = TextLoader(utils.output_rel_path(constants.case_study_pdf, ".txt"))
 sources = loader.load()#get_github_docs("yirenlu92", "deno-manual-forked")
-
 source_chunks = []
 splitter = CharacterTextSplitter(separator=" ", chunk_size=1024, chunk_overlap=0)
 for source in sources:
@@ -40,13 +39,7 @@ for source in sources:
         source_chunks.append(Document(page_content=chunk, metadata=source.metadata))
 search_index = Chroma.from_documents(source_chunks, OpenAIEmbeddings(model="text-embedding-ada-002"))
 
-llm = OpenAI(temperature=0, max_tokens=-1, )
-
-essay_prompt = """This case assignment will explore some of the challenges of taking a new
-product to market. Your role in this case analysis is to develop your own perspective on
-whether you would advocate to bring BKK to market, which of the three options are best,
-and would BKK be successful. Your submitted analysis should detail your position. """
-
+essay_prompt = constants.essay_prompt
 essay_intro_prompt = PromptTemplate(
     template=constants.ARGUMENTATIVE_ESSAY_INTRO_PARAGRAPH_YAML, input_variables=[ "prompt", "context"]
 )
@@ -57,6 +50,7 @@ body_paragraph = PromptTemplate(
 conclusion_paragraph = PromptTemplate(template=constants.ARGUMENTATIVE_ESSAY_CONCLUSION_YAML,
         input_variables=["thesis", "context"])
 
+llm = OpenAI(temperature=0, max_tokens=-1, )
 intro_chain = LLMChain(llm=llm, prompt=essay_intro_prompt)
 body_chain = LLMChain(llm=llm, prompt=body_paragraph)
 conclusion_chain = LLMChain(llm=llm, prompt=conclusion_paragraph)
@@ -76,16 +70,38 @@ def gen_conclusion(thesis):
     inputs = [{"thesis": thesis, "context": doc.page_content} for doc in docs]
     return conclusion_chain.apply(inputs)
 
-introduction = gen_introduction(essay_prompt)[0]["text"]
-thesis = utils.promptGPT(constants.EXTRACT_TOPIC_SENTENCE, introduction)
-print(thesis)
-with open("essay.txt", 'w') as f:
-    f.write(introduction)
-    f.write("\n")
-    f.write(gen_body("1", thesis)[0]["text"])
-    f.write("\n")
-    f.write(gen_body("2", thesis)[0]["text"])
-    f.write("\n")
-    f.write(gen_body("3", thesis)[0]["text"])
-    f.write("\n")
-    f.write(gen_conclusion(thesis)[0]["text"])
+def gen_essay_txt(prompt):
+    introduction = gen_introduction(prompt)[0]["text"]
+    thesis = utils.promptGPT(constants.EXTRACT_TOPIC_SENTENCE, introduction)
+    with open(constants.output_path+"essay.txt", 'w') as f:
+        f.write(introduction)
+        f.write("\n")
+        f.write(gen_body("1", thesis)[0]["text"])
+        f.write("\n")
+        f.write(gen_body("2", thesis)[0]["text"])
+        f.write("\n")
+        f.write(gen_body("3", thesis)[0]["text"])
+        f.write("\n")
+        f.write(gen_conclusion(thesis)[0]["text"])
+
+def revise_paragraph(paragraph):
+    edit = utils.promptGPT("""You are a professional editor and a great essay writer. Edit
+    this text and make it better. Be careful not to change the meaning or arguments.""", paragraph, model="gpt-4")
+    return edit
+
+if __name__ == '__main__':
+    doc = utils.default_pdf_doc(utils.output_rel_path(constants.case_study_pdf+".pdf"))
+    _items = [utils.pdf_title("Argumentative Essay"), Spacer(1, 24)]
+    introduction = revise_paragraph(gen_introduction(essay_prompt)[0]["text"])
+    _items.append(utils.pdf_paragraph(introduction))
+    _items.append(Spacer(1, 24))
+    thesis = utils.promptGPT(constants.EXTRACT_TOPIC_SENTENCE, introduction)
+    for order in ["1","2","3"]:
+        body = revise_paragraph(gen_body(order, thesis)[0]["text"])
+        _items.append(utils.pdf_paragraph(body))
+        _items.append(Spacer(1, 24))
+    conclusion = revise_paragraph(gen_conclusion(thesis)[0]["text"])
+    _items.append(utils.pdf_paragraph(conclusion))
+    doc.build(_items)
+
+    print('AI Argumentative Essay Generated for Document: {}'.format(constants.case_study_pdf))
