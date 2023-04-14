@@ -92,8 +92,8 @@ def revise_paragraph(paragraph):
 if __name__ == '__main__':
     doc = utils.default_pdf_doc(utils.output_rel_path(constants.case_study_pdf+".pdf"))
     _items = [utils.pdf_title("Argumentative Essay"), Spacer(1, 24)]
-    introduction = revise_paragraph(gen_introduction(essay_prompt)[0]["text"])
-    _items.append(utils.pdf_paragraph(introduction))
+    introduction = gen_introduction(essay_prompt)[0]["text"]
+    _items.append(utils.pdf_paragraph(revise_paragraph(introduction)))
     _items.append(Spacer(1, 24))
     thesis = utils.promptGPT(constants.EXTRACT_TOPIC_SENTENCE, introduction)
     for order in ["1","2","3"]:
