@@ -86,7 +86,7 @@ def gen_essay_txt(prompt):
 
 def revise_paragraph(paragraph):
     edit = utils.promptGPT("""You are a professional editor and a great essay writer. Edit
-    this text and make it better. Be careful not to change the meaning or arguments.""", paragraph, model="gpt-4")
+    this paragraph from an essay and make it better, and more professional. Be careful not to change the meaning or arguments.""", paragraph, model="gpt-4")
     return edit
 
 if __name__ == '__main__':
