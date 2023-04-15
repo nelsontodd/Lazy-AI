@@ -53,8 +53,8 @@ Supporting Documents:{context}
 """
 
 EXTRACT_TOPIC_SENTENCE = """
-Instructions: Read this introductory paragraph and extract the three distinct points that
-will be argued in this essay. Respond with ONLY these points.
+Instructions: Read this introductory paragraph and identify the topic sentence that
+outlines the rest of the essay. Extract the three distinct points that will be argued in this essay. Respond with ONLY these points.
 """
 
 ARGUMENTATIVE_ESSAY_BODY_PARAGRAPH_YAML = """

@@ -52,7 +52,9 @@ conclusion_paragraph = PromptTemplate(template=constants.ARGUMENTATIVE_ESSAY_CON
 
 llm = OpenAI(temperature=0, max_tokens=-1, )
 intro_chain = LLMChain(llm=llm, prompt=essay_intro_prompt)
-body_chain = LLMChain(llm=llm, prompt=body_paragraph)
+body_1_chain = LLMChain(llm=llm, prompt=body_paragraph)
+body_2_chain = LLMChain(llm=llm, prompt=body_paragraph)
+body_3_chain = LLMChain(llm=llm, prompt=body_paragraph)
 conclusion_chain = LLMChain(llm=llm, prompt=conclusion_paragraph)
 
 def gen_introduction(prompt):
@@ -60,10 +62,10 @@ def gen_introduction(prompt):
     inputs = [{"context": doc.page_content, "prompt": prompt} for doc in docs]
     return intro_chain.apply(inputs)
 
-def gen_body(order, thesis):
+def gen_body(order, thesis, chain):
     docs = search_index.similarity_search(thesis, k=1)
     inputs = [{"order": order, "thesis": thesis, "context": doc.page_content} for doc in docs]
-    return body_chain.apply(inputs)
+    return chain.apply(inputs)
 
 def gen_conclusion(thesis):
     docs = search_index.similarity_search(thesis, k=1)
@@ -96,8 +98,8 @@ if __name__ == '__main__':
     _items.append(utils.pdf_paragraph(revise_paragraph(introduction)))
     _items.append(Spacer(1, 24))
     thesis = utils.promptGPT(constants.EXTRACT_TOPIC_SENTENCE, introduction)
-    for order in ["1","2","3"]:
-        body = revise_paragraph(gen_body(order, thesis)[0]["text"])
+    for order,chain in enumerate([body_1_chain, body_2_chain, body_3_chain]):
+        body = revise_paragraph(gen_body(str(order+1), thesis, chain)[0]["text"])
         _items.append(utils.pdf_paragraph(body))
         _items.append(Spacer(1, 24))
     conclusion = revise_paragraph(gen_conclusion(thesis)[0]["text"])
