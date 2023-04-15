@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
@@ -16,7 +15,7 @@ const FileUploader = () => {
   const onFileUpload = async (e) => {
     e.preventDefault();
     if (file) {
-      const formDate = {file: file, name: file.name};
+      const formData = {file: file, name: file.name};
       try {
         console.log('Create a backend route');
       } catch (err) {
