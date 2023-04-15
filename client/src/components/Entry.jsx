@@ -33,7 +33,7 @@ const Entry = () => {
                 }
             );
             setEntry('');
-            history.push('/journal');
+            history.push('/homework');
         } catch (err) {
             const errorMessage  = err.response.data.errors[0].msg;
             alert(errorMessage);
@@ -68,7 +68,7 @@ const Entry = () => {
                     />
 
                 </form>
-                <a className="button" href="/journal">Cancel</a>
+                <a className="button" href="/homework">Cancel</a>
             </Container>
         );
     }

@@ -5,7 +5,7 @@ import axios from 'axios';
 import Landing from './components/Landing';
 import Login from './components/auth/Login';
 import Entry from './components/Entry';
-import Journal from './components/Journal';
+import Homework from './components/Homework';
 import SignUp from './components/auth/SignUp';
 
 
@@ -26,7 +26,7 @@ const App = () => (
           <Route exact path="/signup" component={SignUp}/>
           <Route exact path="/login" component={Login}/>
           <Route exact path="/entry" component={Entry}/>
-          <Route exact path="/journal" component={Journal}/>
+          <Route exact path="/homework" component={Homework}/>
         </Switch>
       </section>
     </Fragment>

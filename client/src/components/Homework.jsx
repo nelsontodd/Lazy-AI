@@ -9,7 +9,7 @@ import FileUploader from './utilities/FileUploader';
 import { formatDates, sortEntries } from '../helpers/entries';
 import { getCookies, isLoggedIn } from '../helpers/setAuthToken';
 
-const Journal = () => {
+const Homework = () => {
   const history = useHistory();
 
   if (!isLoggedIn()) {
@@ -22,4 +22,4 @@ const Journal = () => {
   }
 }
 
-export default Journal;
+export default Homework;

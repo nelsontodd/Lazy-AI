@@ -24,7 +24,7 @@ const SignUp = () => {
       try {
         const res = await axios.post('/user', formData);
         setAuthToken(res.data.token);
-        history.push('/journal');
+        history.push('/homework');
       } catch (err) {
         const errorMessage = err.response.data.message;
         alert(errorMessage);
