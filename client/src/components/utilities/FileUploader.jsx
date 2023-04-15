@@ -38,12 +38,7 @@ const FileUploader = () => {
         </div>
       );
     } else {
-      return (
-        <div>
-          <br />
-          <h4>Choose before Pressing the Upload button</h4>
-        </div>
-      );
+      return null;
     }
   }
 
@@ -57,7 +52,7 @@ const FileUploader = () => {
 
   return (
     <div>
-      <h3>Upload file using React!</h3>
+      <h3>Upload your homework.</h3>
       <div>
         <input
           type="file"
