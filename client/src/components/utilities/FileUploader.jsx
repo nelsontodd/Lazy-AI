@@ -15,12 +15,16 @@ const FileUploader = () => {
 
   const onFileUpload = async (e) => {
     e.preventDefault();
-    const formDate = {file: file, name: file.name};
-    try {
-      console.log('Create a backend route');
-    } catch (err) {
-      const errorMessage = err.response.data.message;
-      alert(errorMessage);
+    if (file) {
+      const formDate = {file: file, name: file.name};
+      try {
+        console.log('Create a backend route');
+      } catch (err) {
+        const errorMessage = err.response.data.message;
+        alert(errorMessage);
+      }
+    } else {
+      alert('No file selected.');
     }
   }
 
@@ -42,14 +46,6 @@ const FileUploader = () => {
     }
   }
 
-  const renderUploadButton = () => {
-    if (file) {
-      return (<button disabled onClick={(e) => onFileUpload(e)}>Upload!</button>);
-    } else{
-      return null;
-    }
-  }
-
   return (
     <div>
       <h3>Upload your homework.</h3>
@@ -60,7 +56,7 @@ const FileUploader = () => {
           onChange={(e) => onFileChange(e)}
         />
         <p>Select a file smaller than 5MB before uploading</p>
-        { renderUploadButton() }
+        <button onClick={(e) => onFileUpload(e)}>Upload!</button>
       </div>
       { fileData() }
     </div>
