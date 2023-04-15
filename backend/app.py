@@ -55,5 +55,11 @@ def create_user():
         return jsonify(message=err.messages), 400
     return jsonify(message="Server error"), 500
 
+@app.route('/homework', methods=['POST'])
+def create_solution():
+    data = request.files
+    return jsonify(message="It works!")
+
+
 if __name__ == '__main__':
     app.run(debug=True)

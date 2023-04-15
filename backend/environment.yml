@@ -1,4 +1,3 @@
-name: lazy-ai
 dependencies:
   - autopep8==1.6.0
   - certifi==2021.10.8
@@ -34,3 +33,4 @@ dependencies:
     - Flask-Bcrypt==1.0.1
     - marshmallow==3.19.0
     - pyjwt==2.6.0
+    - pymongo==4.3.3
