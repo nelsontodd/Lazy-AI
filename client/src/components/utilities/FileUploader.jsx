@@ -5,7 +5,12 @@ const FileUploader = () => {
   const [file, setFile] = useState(null);
 
   const onFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0]
+    if (selectedFile.size > 5242880) {
+      alert('The file you selected is too large. Max size 5MB.');
+    } else{
+      setFile(selectedFile);
+    }
   }
 
   const onFileUpload = async (e) => {
@@ -42,14 +47,25 @@ const FileUploader = () => {
     }
   }
 
+  const renderUploadButton = () => {
+    if (file) {
+      return (<button disabled onClick={(e) => onFileUpload(e)}>Upload!</button>);
+    } else{
+      return null;
+    }
+  }
+
   return (
     <div>
       <h3>Upload file using React!</h3>
       <div>
-        <input type="file" onChange={(e) => onFileChange(e)} />
-        <button onClick={(e) => onFileUpload(e)}>
-          Upload!
-        </button>
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => onFileChange(e)}
+        />
+        <p>Select a file smaller than 5MB before uploading</p>
+        { renderUploadButton() }
       </div>
       { fileData() }
     </div>
