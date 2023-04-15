@@ -14,24 +14,24 @@ from io import StringIO, BytesIO
 
 
 if __name__ == '__main__':
-    hwdir, inputhw = "hw/", "abi_SPLEM"
+    hwdir, inputhw = "inputs/", "abi_SPLEM"
     hwpdf = utils.read_pdf(hwdir+inputhw)
-    output_filename="outputs/{}.pdf".format(inputhw)
-    doc = utils.default_pdf_doc("outputs/temp_qualitative_hw.pdf")
+    output_filename=constants.output_path+"{}.pdf".format(inputhw)
+    doc = utils.default_pdf_doc(constants.output_path+"temp_qualitative_hw.pdf")
     _items = [utils.pdf_title("SLP Homework"), Spacer(1, 24)]
     hwresponse = ""
     for page in hwpdf:
         print("""Inputting {} tokens into
-                {}.""".format(utils.num_tokens_from_messages(constants.NON_MATH_HW + page,
-                    constants.model)))
+                {}.""".format(utils.num_tokens_from_messages(constants.NON_MATH_HW +
+                    page),constants.model))
         hwresponse += utils.promptGPT(constants.NON_MATH_HW, page)
     utils.to_md(hwresponse, inputhw)
     utils.pandoc_pdf("outputs/{}".format(inputhw), "outputs/{}".format(inputhw))
     doc.build(_items)
 
     output_pdf = PdfWriter()
-    reportlab_pdf = PdfReader("outputs/temp_qualitative_hw.pdf")
-    pandoc_pdf = PdfReader("outputs/{}.pdf".format(inputhw))
+    reportlab_pdf = PdfReader(constants.output_path+"temp_qualitative_hw.pdf")
+    pandoc_pdf = PdfReader(constants.output_path+"{}.pdf".format(inputhw))
 
     for page_num in range(len(reportlab_pdf.pages)):
         output_pdf.add_page(reportlab_pdf.pages[page_num])
