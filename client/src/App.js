@@ -10,9 +10,9 @@ import SignUp from './components/auth/SignUp';
 
 
 // Styles
-import './css/normalize.css';
-import './css/skeleton.css';
-import './css/custom.css'
+// import './css/normalize.css';
+// import './css/skeleton.css';
+// import './css/custom.css'
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:5000';
