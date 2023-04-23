@@ -1,6 +1,6 @@
 import React from "react";
 
-import Container from "./utilities/Container";
+import Container from '@mui/material/Container';
 
 import quill from "../img/quill.svg"
 
