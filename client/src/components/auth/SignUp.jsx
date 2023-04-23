@@ -2,24 +2,28 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import Container from "@mui/material/Container";
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { Link as RouterLink } from 'react-router-dom';
+
 import { setAuthToken } from '../../helpers/setAuthToken';
 
 const SignUp = () => {
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const history = useHistory();
 
-
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== password2) {
       alert('Your passwords do not match');
     } else {
-      const formData = {name, email, password};
+      const formData = { name, email, password };
 
       try {
         const res = await axios.post('/user', formData);
@@ -30,77 +34,85 @@ const SignUp = () => {
         alert(errorMessage);
       }
     }
-  }
+  };
 
   return (
     <Container>
-      <h1>Sign Up</h1>
-      <p className="lead">
+      <Typography variant="h4" gutterBottom>
+        Sign Up
+      </Typography>
+      <Typography variant="h6" gutterBottom>
         <i className="fas fa-user"></i> Create Your Account
-      </p>
+      </Typography>
 
       <form onSubmit={onSubmit}>
-        <label>Name</label>
-        <input
-          type="text"
-          className="u-full-width"
-          placeholder="James"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        <label>Email Address</label>
-        <input
-          type="email"
-          className="u-full-width"
-          placeholder="name@email.com"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <label>Password</label>
-        <input
-          type="password"
-          className="u-full-width"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          minLength="6"
-          required
-        />
-
-        <label>Confirm Password</label>
-        <input
-          type="password"
-          className="u-full-width"
-          placeholder="password"
-          name="password2"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-          minLength="6"
-          required
-        />
-
-        <input
-          className="button button-primary"
-          type="submit"
-          value="Sign Up"
-        />
-
-        <p>
+        <Box marginBottom={2}>
+          <TextField
+            label="Name"
+            type="text"
+            variant="outlined"
+            fullWidth
+            placeholder="James"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </Box>
+        <Box marginBottom={2}>
+          <TextField
+            label="Email Address"
+            type="email"
+            variant="outlined"
+            fullWidth
+            placeholder="name@email.com"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Box>
+        <Box marginBottom={2}>
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            minLength="6"
+            required
+          />
+        </Box>
+        <Box marginBottom={2}>
+          <TextField
+            label="Confirm Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            placeholder="password"
+            name="password2"
+            value={password2}
+            onChange={(e) => setPassword2(e.target.value)}
+            minLength="6"
+            required
+          />
+        </Box>
+        <Box marginBottom={2}>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Sign Up
+          </Button>
+        </Box>
+        <Typography>
           Already have an account? &nbsp;
-          <a className="button" href="/login">
+          <Button component={RouterLink} to="/login" color="primary">
             Login
-          </a>
-        </p>
+          </Button>
+        </Typography>
       </form>
-
     </Container>
   );
-}
+};
 
 export default SignUp;
