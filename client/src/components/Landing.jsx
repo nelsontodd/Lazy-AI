@@ -9,7 +9,7 @@ import quill from "../img/quill.svg";
 
 const Landing = () => {
   return (
-    <Container>
+    <Container maxWidth="md">
       <Typography variant="h4" gutterBottom>
         Daybook
       </Typography>

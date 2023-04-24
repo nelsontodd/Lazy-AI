@@ -30,7 +30,7 @@ const Login = () => {
   };
 
   return (
-    <Container>
+    <Container maxWidth="md">
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>

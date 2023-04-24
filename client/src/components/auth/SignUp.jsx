@@ -37,7 +37,7 @@ const SignUp = () => {
   };
 
   return (
-    <Container>
+    <Container maxWidth="md">
       <Typography variant="h4" gutterBottom>
         Sign Up
       </Typography>
