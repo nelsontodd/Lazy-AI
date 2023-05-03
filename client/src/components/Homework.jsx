@@ -14,9 +14,7 @@ const Homework = () => {
     return null;
   } else {
     return (
-      <Container maxWidth="md">
-        <FileUploader />
-      </Container>
+      <FileUploader />
     );
   }
 }

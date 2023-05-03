@@ -1,4 +1,5 @@
 import React from "react";
+import Box from '@mui/material/Box';
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -9,7 +10,7 @@ import quill from "../img/quill.svg";
 
 const Landing = () => {
   return (
-    <Container maxWidth="md">
+    <Box>
       <Typography variant="h4" gutterBottom>
         Daybook
       </Typography>
@@ -61,7 +62,7 @@ const Landing = () => {
           <img src={quill} className="img-height" alt="quill" />
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 };
 

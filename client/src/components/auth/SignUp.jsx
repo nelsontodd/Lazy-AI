@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { setAuthToken } from '../../helpers/setAuthToken';
@@ -37,7 +37,7 @@ const SignUp = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Box>
       <Typography variant="h4" gutterBottom>
         Sign Up
       </Typography>
@@ -111,7 +111,7 @@ const SignUp = () => {
           </Button>
         </Typography>
       </form>
-    </Container>
+    </Box>
   );
 };
 
