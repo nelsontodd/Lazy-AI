@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import Typography from '@mui/material/Typography';
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
@@ -31,13 +34,13 @@ const FileUploader = () => {
     if (file) {
       return (
         <div>
-          <h2>File Details:</h2>
-          <p>File Name: { file.name }</p>
-          <p>File Type: { file.type }</p>
-          <p>
+          <Typography variant="h5">File Details:</Typography>
+          <Typography>File Name: { file.name }</Typography>
+          <Typography>File Type: { file.type }</Typography>
+          <Typography>
             Last Modified:{ " " }
             { file.lastModifiedDate.toDateString() }
-          </p>
+          </Typography>
         </div>
       );
     } else {
@@ -47,15 +50,23 @@ const FileUploader = () => {
 
   return (
     <div>
-      <h3>Upload your homework.</h3>
+      <Typography variant="h5">Upload your homework.</Typography>
       <div>
-        <input
+        <Input
           type="file"
-          accept="application/pdf"
+          inputProps={{
+            accept: "application/pdf",
+            display: 'none'
+          }}
           onChange={(e) => onFileChange(e)}
+          sx={{ mb: 1 }}
         />
-        <p>Select a file smaller than 5MB before uploading</p>
-        <button onClick={(e) => onFileUpload(e)}>Upload!</button>
+        <Typography variant="body2" color="textSecondary">
+          Select a file smaller than 5MB before uploading
+        </Typography>
+        <Button variant="contained" color="primary" onClick={(e) => onFileUpload(e)}>
+          Upload!
+        </Button>
       </div>
       { fileData() }
     </div>

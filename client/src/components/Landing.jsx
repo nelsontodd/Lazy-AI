@@ -1,57 +1,69 @@
 import React from "react";
+import Box from '@mui/material/Box';
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { Link as RouterLink } from "react-router-dom";
 
-import Container from "./utilities/Container";
-
-import quill from "../img/quill.svg"
-
+import quill from "../img/quill.svg";
 
 const Landing = () => {
-    return (
-        <Container>
-            <h1 className="title">Daybook</h1>
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Daybook
+      </Typography>
 
-            <p className="lead">
-                This is a micro-journaling service to enable you to
-                record and remember your life.
-            </p>
+      <Typography variant="h6" gutterBottom>
+        This is a micro-journaling service to enable you to record and remember
+        your life.
+      </Typography>
 
-            <div className="row">
-                <div className="six columns">
-                    <a className="button button-primary u-full-width" href="/signup">
-                        Sign Up
-                    </a>
-                </div>
-                <div className="six columns">
-                    <a className="button u-full-width" href="/login">
-                        Login
-                    </a>
-                </div>
-            </div>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Button
+            component={RouterLink}
+            to="/signup"
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            Sign Up
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Button component={RouterLink} to="/login" variant="outlined" fullWidth>
+            Login
+          </Button>
+        </Grid>
+      </Grid>
 
-            <hr/>
+      <hr />
 
-            <div className="row">
-                <div className="six columns">
-                    <h5>What is Daybook and why should I use it?</h5>
-                    <p>
-                        Daybook is a micro-journaling service to help you
-                        record your life in a tweet length entries to easily
-                        help you form a journaling habit.
-                    </p>
+      <Grid container spacing={2}>
+        <Grid item md={6}>
+          <Typography variant="h5" gutterBottom>
+            What is Daybook and why should I use it?
+          </Typography>
+          <Typography paragraph>
+            Daybook is a micro-journaling service to help you record your life
+            in a tweet length entries to easily help you form a journaling
+            habit.
+          </Typography>
 
-                    <p>
-                        By keeping entries short and easy, Daybook enables
-                        consistency and let's you focus on the most important
-                        parts of each day. You can then remember the major
-                        events and trends in your life.
-                    </p>
-                </div>
-                <div className="six columns">
-                    <img src={quill} className="img-height" alt="quill"/>
-                </div>
-            </div>
-        </Container>
-    );
-}
+          <Typography paragraph>
+            By keeping entries short and easy, Daybook enables consistency and
+            let's you focus on the most important parts of each day. You can
+            then remember the major events and trends in your life.
+          </Typography>
+        </Grid>
+        <Grid item md={6}>
+          <img src={quill} className="img-height" alt="quill" />
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
 
 export default Landing;
