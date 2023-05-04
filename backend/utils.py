@@ -45,7 +45,7 @@ def output_rel_path(filename, extension=""):
 def input_rel_path(filename, extension=""):
     return constants.input_path+filename+extension
 
-def mathpix_post_local_file(filename, _dir="inputs/", extension=".pdf", url="https://api.mathpix.com/v3/pdf"):
+def mathpix_post_local_file(filename, _dir=constants.input_path, extension=".pdf", url="https://api.mathpix.com/v3/pdf"):
     pdf_id = requests.post(url,
             headers = headers,
             data={
