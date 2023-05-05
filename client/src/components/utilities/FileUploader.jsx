@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
+
 
 const FileUploader = () => {
-  const [file, setFile] = useState(null);
+    const [file, setFile] = useState(null);
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -18,9 +20,16 @@ const FileUploader = () => {
   const onFileUpload = async (e) => {
     e.preventDefault();
     if (file) {
-      const formData = {file: file, name: file.name};
+      const formData = new FormData();
       try {
-        console.log('Create a backend route');
+        formData.append('file', file);
+        formData.append('fileName', file.name);
+        const config = {
+          headers: {
+            'content-type': 'multipart/form-data',
+          },
+        };
+        const res = await axios.post('/homework', formData, config);
       } catch (err) {
         const errorMessage = err.response.data.message;
         alert(errorMessage);

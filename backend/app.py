@@ -6,6 +6,9 @@ from pymongo import MongoClient
 
 from authentication import create_token
 from schemas import LoginSchema, UserSchema
+import utils
+import constants
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -58,6 +61,8 @@ def create_user():
 @app.route('/homework', methods=['POST'])
 def create_solution():
     data = request.files
+    print(data['file'])
+    data['file'].save("../inputs/web_app_upload.pdf")
     return jsonify(message="It works!")
 
 
