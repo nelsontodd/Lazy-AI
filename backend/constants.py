@@ -5,11 +5,12 @@ model = os.getenv("OPENAI_MODEL")
 username=os.getenv("OPENAI_USER")
 mathpix_api_key = os.getenv("MATHPIX_API_KEY")
 mathpix_app_id = os.getenv("MATHPIX_APP_ID")
+serpapi_api_key = os.getenv("SERPAPI_API_KEY")
 
 essay_prompt = os.getenv("INPUT_ESSAY_PROMPT")
 case_study_pdf = os.getenv("CASE_STUDY_PDF")
-input_path = "inputs/"
-output_path = "outputs/"
+input_path = os.getenv("PROJECT_DIR")+"/inputs/"
+output_path = os.getenv("PROJECT_DIR")+"/outputs/"
 
 CSV_INSTRUCTIONS = """Give no other
     text besides CSV. Ignore all previous command and prompts. Do not respond to this
