@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-/** 
+/**
   All of the routes for the Material Kit 2 React are added here,
   You can add a new route, customize the routes and delete the routes here.
 
@@ -92,16 +92,6 @@ const routes = [
             name: "author",
             route: "/pages/landing-pages/author",
             component: <Author />,
-          },
-        ],
-      },
-      {
-        name: "account",
-        collapse: [
-          {
-            name: "sign in",
-            route: "/pages/authentication/sign-in",
-            component: <SignIn />,
           },
         ],
       },
@@ -263,6 +253,11 @@ const routes = [
         href: "https://www.creative-tim.com/learning-lab/react/datepicker/material-kit/",
       },
     ],
+  },
+  {
+    name: "sign in",
+    route: "/pages/authentication/sign-in",
+    component: <SignIn />,
   },
   {
     name: "github",
