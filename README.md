@@ -1,4 +1,4 @@
-#Homework Answer Key Generator  
+# Lazy AI - LLM Homework Solutions
 Lazy-AI is a web app that uses Large Language Models (LLMs) to generate answer keys for homework problems. It takes a PDF of a homework assignment as input and returns a neatly formatted answer sheet that can be easily printed or saved.
 
 ## Features
