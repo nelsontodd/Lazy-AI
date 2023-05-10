@@ -10,9 +10,12 @@ Lazy-AI is a web app that uses Large Language Models (LLMs) to generate answer k
 - The Homework Answer Key Generator is built using the following technologies:
 ## Installation
 - Clone the repository:
-`git clone https://github.com/yourusername/homework-answer-key-generator.git`
-`cd lazy-ai`
-`pip install -r requirements.txt`
+    - `git clone https://github.com/yourusername/homework-answer-key-generator.git`
+- Enter and install dependencies
+    - `cd lazy-ai`
+    - `conda env create lazy-ai`
+    - `conda activate homework-answer-key-generator`
+    - `pip install -r requirements.txt`
 
 ## TODO:
 - Develop the frontend user interface using JavaScript and HTML.
