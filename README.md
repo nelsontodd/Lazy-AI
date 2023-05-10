@@ -1,5 +1,22 @@
-# OpenAI-Sparknotes
-Generate a short list of questions and answers from arbitrary audio file. Uses whisper and gpt-3.5. I use fish shell so my env script will need to be modified to work for bash. Sorry. It also does homework now. Just Input a pdf. Probably the answers are wrong. Move env_template to env.sh
+#Homework Answer Key Generator
+Lazy-AI is a web app that uses Large Language Models (LLMs) to generate answer keys for homework problems. It takes a PDF of a homework assignment as input and returns a neatly formatted answer sheet that can be easily printed or saved.
 
-Example Answer Sheet:
+## Features
+- Generates answer keys for homework problems of arbitrary length and for any subject.
+- Uses LLMs and NLP to generate natural language answers.
+- Automatically formats and typesets the answer sheet.
+- Can handle multiple input PDFs at once.
+- Technologies Used
+- The Homework Answer Key Generator is built using the following technologies:
+## Installation
+- Clone the repository:
+`git clone https://github.com/yourusername/homework-answer-key-generator.git`
+`cd lazy-ai`
+`pip install -r requirements.txt`
+
+## TODO:
+- Develop the frontend user interface using JavaScript and HTML.
+- Integrate the backend and frontend to create a seamless user experience.
+- Write tests to ensure that the application is functioning correctly.
+
 ![Left: Answer Key. Right: Study Guide](hwanswerexample.png "Example")
