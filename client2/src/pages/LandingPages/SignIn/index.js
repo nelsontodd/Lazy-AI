@@ -14,9 +14,8 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from "react";
-
-// react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -36,17 +35,35 @@ import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 
 // Material Kit 2 React example components
-import DefaultNavbar from "examples/Navbars/DefaultNavbar";
-import SimpleFooter from "examples/Footers/SimpleFooter";
+import DefaultNavbar from "custom/Navbars/DefaultNavbar";
+import SimpleFooter from "custom/Footers/SimpleFooter";
 
 // Material Kit 2 React page layout routes
 import routes from "routes";
+import { setAuthToken } from "helpers/setAuthToken";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function SignInBasic() {
   const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    console.log('What the fuck');
+    const formData = { email, password };
+    try {
+      const res = await axios.post('/login', formData);
+      setAuthToken(res.data.token);
+      navigate.push('/homework');
+    } catch (err) {
+      const errorMessage = err.response.data.message;
+      alert(errorMessage);
+    }
+  };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -118,9 +135,17 @@ function SignInBasic() {
                 </Grid>
               </MKBox>
               <MKBox pt={4} pb={3} px={3}>
-                <MKBox component="form" role="form">
+                <MKBox component="form" role="form" onSubmit={onSubmit}>
                   <MKBox mb={2}>
-                    <MKInput type="email" label="Email" fullWidth />
+                    <MKInput
+                      type="email"
+                      label="Email"
+                      fullWidth
+                      placeholder="name@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </MKBox>
                   <MKBox mb={2}>
                     <MKInput type="password" label="Password" fullWidth />
@@ -138,7 +163,12 @@ function SignInBasic() {
                     </MKTypography>
                   </MKBox>
                   <MKBox mt={4} mb={1}>
-                    <MKButton variant="gradient" color="info" fullWidth>
+                    <MKButton
+                      variant="gradient"
+                      color="info"
+                      onClick={onSubmit}
+                      fullWidth
+                    >
                       sign in
                     </MKButton>
                   </MKBox>
