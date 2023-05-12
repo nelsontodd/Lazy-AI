@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useEffect } from "react";
+import axios from 'axios';
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -25,9 +26,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 // Material Kit 2 React themes
 import theme from "assets/theme";
 import Presentation from "layouts/pages/presentation";
+import Homework from "pages/Homework";
 
 // Material Kit 2 React routes
 import routes from "routes";
+
+axios.defaults.baseURL = 'http://127.0.0.1:5000';
 
 export default function App() {
   const { pathname } = useLocation();
@@ -56,8 +60,9 @@ export default function App() {
       <CssBaseline />
       <Routes>
         {getRoutes(routes)}
-        <Route path="/presentation" element={<Presentation />} />
-        <Route path="*" element={<Navigate to="/presentation" />} />
+        <Route path="/" element={<Presentation />} />
+        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/homework" element={<Homework />} />
       </Routes>
     </ThemeProvider>
   );

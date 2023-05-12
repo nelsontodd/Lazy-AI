@@ -53,12 +53,11 @@ function SignInBasic() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log('What the fuck');
     const formData = { email, password };
     try {
       const res = await axios.post('/login', formData);
       setAuthToken(res.data.token);
-      navigate.push('/homework');
+      navigate('/homework');
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(errorMessage);
@@ -148,7 +147,14 @@ function SignInBasic() {
                     />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="password" label="Password" fullWidth />
+                    <MKInput
+                      type="password"
+                      label="Password"
+                      fullWidth
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
                   </MKBox>
                   <MKBox display="flex" alignItems="center" ml={-1}>
                     <Switch checked={rememberMe} onChange={handleSetRememberMe} />
