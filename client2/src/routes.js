@@ -71,11 +71,6 @@ import Typography from "layouts/sections/elements/typography";
 
 const routes = [
   {
-    name: "sign in",
-    route: "/sign-in",
-    component: <SignIn />,
-  },
-  {
     name: "sign up",
     route: "/sign-up",
     component: <SignUp />,
