@@ -71,9 +71,9 @@ function SignInBasic() {
       <DefaultNavbar
         routes={routes}
         action={{
-          type: "external",
-          route: "https://www.creative-tim.com/product/material-kit-react",
-          label: "free download",
+          type: "internal",
+          route: "/sign-in",
+          label: "sign in",
           color: "info",
         }}
         transparent
@@ -183,7 +183,7 @@ function SignInBasic() {
                       Don&apos;t have an account?{" "}
                       <MKTypography
                         component={Link}
-                        to="/authentication/sign-up/cover"
+                        to="/sign-up"
                         variant="button"
                         color="info"
                         fontWeight="medium"
