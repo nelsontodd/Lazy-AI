@@ -25,7 +25,6 @@ import MKSocialButton from "components/MKSocialButton";
 
 // Material Kit 2 React examples
 import DefaultNavbar from "custom/Navbars/DefaultNavbar";
-import DefaultFooter from "custom/Footers/DefaultFooter";
 import FilledInfoCard from "custom/Cards/InfoCards/FilledInfoCard";
 
 // Presentation page sections
@@ -41,7 +40,6 @@ import BuiltByDevelopers from "pages/Presentation/components/BuiltByDevelopers";
 
 // Routes
 import routes from "routes";
-import footerRoutes from "footer.routes";
 
 // Images
 import bgImage from "assets/images/bg-presentation.jpg";
@@ -215,9 +213,6 @@ function Presentation() {
           </Container>
         </MKBox>
       </Card>
-      <MKBox pt={6} px={1} mt={6}>
-        <DefaultFooter content={footerRoutes} />
-      </MKBox>
     </>
   );
 }
