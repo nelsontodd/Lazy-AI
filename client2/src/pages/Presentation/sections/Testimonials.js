@@ -23,7 +23,7 @@ import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 
 // Material Kit 2 React examples
-import DefaultReviewCard from "examples/Cards/ReviewCards/DefaultReviewCard";
+import DefaultReviewCard from "custom/Cards/ReviewCards/DefaultReviewCard";
 
 // Images
 import appleLogo from "assets/images/logos/gray-logos/logo-apple.svg";

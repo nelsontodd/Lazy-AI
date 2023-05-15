@@ -21,8 +21,8 @@ import Grid from "@mui/material/Grid";
 import MKBox from "components/MKBox";
 
 // Material Kit 2 React examples
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
-import CenteredBlogCard from "examples/Cards/BlogCards/CenteredBlogCard";
+import DefaultInfoCard from "custom/Cards/InfoCards/DefaultInfoCard";
+import CenteredBlogCard from "custom/Cards/BlogCards/CenteredBlogCard";
 
 function Information() {
   return (
