@@ -11,13 +11,14 @@ const Homework = () => {
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      console.log('What the fuck');
       navigate('/sign-in');
     }
   });
 
   return (
-    <FileUploader />
+    <Container>
+      <FileUploader />
+    </Container>
   );
 }
 
