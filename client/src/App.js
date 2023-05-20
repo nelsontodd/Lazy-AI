@@ -1,36 +1,73 @@
-import React, { Fragment } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+/**
+=========================================================
+* Material Kit 2 React - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-kit-react
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+
+import { useEffect } from "react";
 import axios from 'axios';
 
-import Box from '@mui/material/Box';
-import Container from "@mui/material/Container";
-import GlobalStyles from '@mui/material/GlobalStyles';
+// react-router components
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-import Landing from './components/Landing';
-import Login from './components/auth/Login';
-import Homework from './components/Homework';
-import SignUp from './components/auth/SignUp';
+// @mui material components
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
+// Material Kit 2 React themes
+import theme from "assets/theme";
+import Presentation from "layouts/pages/presentation";
+import Homework from "pages/Homework";
+import SignIn from "layouts/pages/authentication/sign-in";
+import SignUp from "layouts/pages/authentication/sign-up";
+
+// Material Kit 2 React routes
+import routes from "routes";
 
 axios.defaults.baseURL = 'http://127.0.0.1:5000';
 
-const App = () => (
-  <Box mt={5}>
-    <Container maxWidth="md">
-      <Router>
-        <Fragment>
-          <Route exact path="/" component={Landing}/>
-          <section className="container">
-            <Switch>
-              <Route exact path="/signup" component={SignUp}/>
-              <Route exact path="/login" component={Login}/>
-              <Route exact path="/homework" component={Homework}/>
-            </Switch>
-          </section>
-        </Fragment>
-      </Router>
-    </Container>
-  </Box>
-);
+export default function App() {
+  const { pathname } = useLocation();
 
-export default App;
+  // Setting page scroll to 0 when changing the route
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+  }, [pathname]);
+
+  const getRoutes = (allRoutes) =>
+    allRoutes.map((route) => {
+      if (route.collapse) {
+        return getRoutes(route.collapse);
+      }
+
+      if (route.route) {
+        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      }
+
+      return null;
+    });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Routes>
+        {getRoutes(routes)}
+        <Route path="/" element={<Presentation />} />
+        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/homework" element={<Homework />} />
+      </Routes>
+    </ThemeProvider>
+  );
+}
