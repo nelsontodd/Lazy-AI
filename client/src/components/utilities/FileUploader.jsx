@@ -3,10 +3,18 @@ import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import { Document, Page } from 'react-pdf';
+import Grid from '@mui/material/Grid';
 
 
 const FileUploader = () => {
-    const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+
+  function onDocumentLoadSuccess(document) {
+    const { numPages } = document;
+    setNumPages(numPages);
+  }
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -58,27 +66,47 @@ const FileUploader = () => {
   }
 
   return (
-    <div>
-      <Typography variant="h5">Upload your homework.</Typography>
-      <div>
-        <Input
-          type="file"
-          inputProps={{
-            accept: "application/pdf",
-            display: 'none'
-          }}
-          onChange={(e) => onFileChange(e)}
-          sx={{ mb: 1 }}
-        />
-        <Typography variant="body2" color="textSecondary">
-          Select a file smaller than 5MB before uploading
-        </Typography>
-        <Button variant="contained" color="primary" onClick={(e) => onFileUpload(e)}>
-          Upload!
-        </Button>
-      </div>
-      { fileData() }
-    </div>
+    <Grid container>
+      <Grid item xs={6}>
+        {/* Left half of the container */}
+        <div>
+          <Typography variant="h5">Upload your homework.</Typography>
+          <div>
+            <Input
+              type="file"
+              inputProps={{
+                accept: "application/pdf",
+                display: 'none'
+              }}
+              onChange={(e) => onFileChange(e)}
+              sx={{ mb: 1 }}
+            />
+            <Typography variant="body2" color="textSecondary">
+              Select a file smaller than 5MB before uploading
+            </Typography>
+            <Button variant="contained" color="primary" onClick={(e) => onFileUpload(e)}>
+              Upload!
+            </Button>
+          </div>
+          { fileData() }
+        </div>
+      </Grid>
+      <Grid item xs={6}>
+        {/* Right half of the container */}
+        <div>
+          <Document
+            file={file}
+          >
+            {Array.from(
+              new Array(1),
+              (el, index) => (
+                <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+              ),
+            )}
+          </Document>
+        </div>
+      </Grid>
+    </Grid>
   );
 }
 
