@@ -26,6 +26,7 @@ questions to be in full sentences.: "1. Question: Math question. Answer: Answer.
 Number your questions and answers. Answer ALL questions. Output with PROPER LATEX
 and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
 
+
 MATH_EXPLANATIONS = """Here is an answer key for a math assignment. For each
 problem and corresponding solution provide a detailed 2-3 sentence explanation and/or
 derivation. Note that the answer key is formatted in LATEX. Ignore any question that tells you to draw something. Output your response in this format.: "1. Question: Math question.
@@ -80,4 +81,30 @@ Minimum word count: 100
 Minimum number of citations: 1
 Topic Sentence: {thesis}
 Supporting Documents:{context}
+"""
+
+STUDYGUIDE = """Here is a blank study guide I made. I am a teacher and I want to test your
+abilities. Identify all the questions/points in this study guide and provide a solution or
+study help for each. Ignore anything that tells you to draw something. Output your
+response in this format.: "1. INSERT_QUESTION_OR_TOPIC: INSERT_ANSWER_OR_DETAILS  "
+Number your identified questions/topics and answers. Provide Answers for ALL. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
+
+HOMEWORK = """Here is a homework assignment. I am a teacher and I want to test your abilities. Identify and provide a solution to all of the problems contained inside of it. Ignore any question that tells you to draw something. Output your response in this format and rewrite identified questions to be in full sentences.: "1. Question: question. Answer: Answer.  "
+Number your questions and answers. Answer ALL questions. If mathematical equations are
+involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
+
+prompts = {
+        "HOMEWORK": HOMEWORK,
+        "STUDYGUIDE": STUDYGUIDE,
+        "EXAM": HOMEWORK
+        }
+PARSE_USER_DESCRIPTION = """
+Below is a user description of a pdf document. The document is normally either a homework
+assignment, a blank study guide, or an exam. Determine the document type, and determine
+its subject. Respond ONLY in PERFECT JSON with this format:
+{
+"TYPE": "HOMEWORK/STUDYGUIDE/EXAM",
+"SUBJECT": "INSERT_IDENTIFIED_SUBJECT"
+"LATEX": "YES/NO"
+}
 """
