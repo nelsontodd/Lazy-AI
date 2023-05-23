@@ -8,6 +8,7 @@ from authentication import create_token
 from schemas import LoginSchema, UserSchema
 import utils
 import constants
+import lazy_ai
 
 
 app = Flask(__name__)
@@ -61,8 +62,10 @@ def create_user():
 @app.route('/homework', methods=['POST'])
 def create_solution():
     data = request.files
-    print(data['file'])
-    data['file'].save("../inputs/web_app_upload.pdf")
+    hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Calculus Homework", "nelsontodd", "Nelson Morrow", "Homework 4")
+    print("Saving uploaded file to {}".format(hwsolve.input_rel_path(data['file'].filename)))
+    data['file'].save(hwsolve.input_rel_path(data['file'].filename))
+    solutions = hwsolve.solutions_pdf()
     return jsonify(message="It works!")
 
 
