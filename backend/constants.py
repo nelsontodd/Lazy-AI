@@ -68,13 +68,14 @@ Number your identified questions/topics and answers. Provide Answers for ALL. If
 
 HOMEWORK = """Here is a homework assignment. I am a teacher and I want to test your
 abilities. Identify and provide a solution to all of the problems contained inside of it.
-Ignore any question that tells you to draw something. Output your response in this format
-and rewrite identified questions to be in full sentences.: "1. INSERT_QUESTION: INSERT_ANSWER_OR_DETAILS  " Number your questions and answers. Answer ALL questions. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
+Ignore any question that tells you to draw something. rewrite identified questions to be
+in full sentences. Output your questions and answers in this format: "1.
+IDENTIFIED_QUESTION  \n- ANSWER  " Number your questions and answers. Answer ALL questions. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
 
 PARSE_USER_DESCRIPTION = """
 Below is a user description of a pdf document. The document is normally either a homework
 assignment, a blank study guide, or an exam. Determine the document type, and determine
-its subject. If the document is likely to contain LATEX then set LATEX to True. Respond ONLY in PERFECT JSON with this format:
+its subject. If the document is likely to contain mathematical functions or equations then set LATEX to True. Respond ONLY in PERFECT JSON with this format:
 {
 "TYPE": "HOMEWORK OR STUDYGUIDE OR EXAM",
 "SUBJECT": "INSERT_IDENTIFIED_SUBJECT"

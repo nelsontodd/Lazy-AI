@@ -82,13 +82,53 @@ def mathpix_img_to_txt(filename, img_id="", url="https://api.mathpix.com/v3/text
     return img_id
 
 
-def pandoc_pdf(_input, _output=""):
+def pandoc_pdf(_input, _output="", depth=1):
+    print("running pandoc")
+    def pandoc_error_handle(errormsg, depth=1):
+        print("ERROR: Error with PDF format. Reformatting and trying again.")
+        with open(_input, "r") as f:
+            mmd = f.read()
+        fixed = promptGPT("""Fix this markdown to ensure it can be converted to pdf by xelatex.
+        The Error message is: {}, the document is below.""".format(errormsg), mmd,
+        model="gpt-3.5-turbo")
+        with open(_input, "w") as f:
+            f.write(fixed)
+        if depth < 3:
+            pandoc_pdf(_input, _output, depth+1)
+        else:
+            return "PDF convert failed. Try again."
+
     if _output=="":
         command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _input)
-        print(os.system(command))
+        output = os.system(command)
+        if 'Error' in str(output):
+            pandoc_error_handle(output, depth)
     else:
         command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _output)
-        print(os.system(command))
+        output = os.system(command)
+        if 'Error' in str(output):
+            pandoc_error_handle(output, depth)
+
+def to_md(buffer, title):
+    if type(buffer) == str:
+        filename = '{}.md'.format(title)
+        with open(filename, 'w') as file:
+            file.write(buffer)
+        return filename
+    elif type(buffer) == list:
+        i = 1
+        filenames = []
+        for item in buffer:
+            filename = '/{}/{}.md'.format(title, i)
+            if not os.path.exists('/{}'.format(title)):
+                os.makedirs('/{}'.format(title))
+            with open(filename, 'w') as file:
+                file.write(item)
+            i+=1
+            filenames.append(filename)
+        return filenames
+    else:
+        raise ValueError("Buffer must be list or string")
 
 def pdf_to_txt(_input, _output):
     if _input[-4] != ['.']:
@@ -111,27 +151,6 @@ def to_csv(buffer, title):
             filename = '{}/{}.csv'.format(title, i)
             if not os.path.exists('{}'.format(title)):
                 os.makedirs('{}'.format(title))
-            with open(filename, 'w') as file:
-                file.write(item)
-            i+=1
-            filenames.append(filename)
-        return filenames
-    else:
-        raise ValueError("Buffer must be list or string")
-
-def to_md(buffer, title):
-    if type(buffer) == str:
-        filename = '{}.md'.format(title)
-        with open(filename, 'w') as file:
-            file.write(buffer)
-        return filename
-    elif type(buffer) == list:
-        i = 1
-        filenames = []
-        for item in buffer:
-            filename = '/{}/{}.md'.format(title, i)
-            if not os.path.exists('/{}'.format(title)):
-                os.makedirs('/{}'.format(title))
             with open(filename, 'w') as file:
                 file.write(item)
             i+=1
