@@ -222,7 +222,7 @@ def pdf_title(title, formatstyle=styles):
     return Paragraph(title, formatstyle['Main Title'])
 
 def default_pdf_doc(output_filename, fullname, pagesize=A4):
-    doc = SimpleDocTemplate(output_filename, pagesize=A4)
+    doc = SimpleDocTemplate(output_filename, pagesize=pagesize)
     # Create a Frame to hold content
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='normal')
     # Create a custom PageTemplate with the onPage function
