@@ -74,11 +74,11 @@ and rewrite identified questions to be in full sentences.: "1. INSERT_QUESTION: 
 PARSE_USER_DESCRIPTION = """
 Below is a user description of a pdf document. The document is normally either a homework
 assignment, a blank study guide, or an exam. Determine the document type, and determine
-its subject. Respond ONLY in PERFECT JSON with this format:
+its subject. If the document is likely to contain LATEX then set LATEX to True. Respond ONLY in PERFECT JSON with this format:
 {
-"TYPE": "HOMEWORK/STUDYGUIDE/EXAM",
+"TYPE": "HOMEWORK OR STUDYGUIDE OR EXAM",
 "SUBJECT": "INSERT_IDENTIFIED_SUBJECT"
-"LATEX": "YES/NO"
+"LATEX": "True OR False"
 }
 """
 
