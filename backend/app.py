@@ -61,9 +61,11 @@ def create_user():
 
 @app.route('/homework', methods=['POST'])
 def create_solution():
+    #TODO: Add security and schema validation logic
+    #TODO: Get username, prompt for user full name, assignment description, title (optional)
+    #Possibly: LLM Model selection
     data = request.files
-    hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Calculus Homework", "nelsontodd", "Nelson Morrow", "Homework 4")
-    print("Saving uploaded file to {}".format(hwsolve.input_rel_path(data['file'].filename)))
+    hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Speech Language Pathology Exam Study Guide", "nelsontodd", "Nelson Morrow", "Homework 4")
     data['file'].save(hwsolve.input_rel_path(data['file'].filename))
     solutions = hwsolve.solutions_pdf()
     return jsonify(message="It works!")

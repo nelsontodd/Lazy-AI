@@ -19,17 +19,14 @@ class LazyAI:
 
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
-        os.makedirs(constants.output_path, exist_ok=True)
         self.latex = True
         self.model="gpt-3.5-turbo"
 
     def output_rel_path(self, filename, extension=""):
-        print(constants.output_path)
         os.makedirs(constants.output_path+self.username, exist_ok=True)
         return constants.output_path+self.username+"/"+filename+extension
 
     def input_rel_path(self, filename, extension=""):
-        print(constants.input_path)
         os.makedirs(constants.input_path+self.username, exist_ok=True)
         return constants.input_path+self.username+"/"+filename+extension
 
@@ -43,7 +40,6 @@ class LazyAI:
 
     def determine_prompt_from_description(self):
         descrip_JSON = json.loads(utils.promptGPT(constants.PARSE_USER_DESCRIPTION, self.document_description))
-        print(descrip_JSON.keys())
         if descrip_JSON["LATEX"] == False:
             self.Latex = False
         return constants.prompts[descrip_JSON["TYPE"]] + "The subject is {}".format(descrip_JSON["SUBJECT"])
@@ -55,12 +51,13 @@ class LazyAI:
         return page_filename
 
     def write_answers_to_pdf(self, text):
+        answers_pdf = "{}_answers".format(self.input_pdf)
         solutions = utils.promptGPT(self.determine_prompt_from_description(),
                 text, self.model)
-        utils.to_md(solutions, self.output_rel_path("{}_answers".format(self.input_pdf)))
-        utils.pandoc_pdf(self.output_rel_path("{}_answers".format(self.input_pdf)),
-                self.output_rel_path("{}_answers".format(self.input_pdf)))
-        return "{}_answers".format(self.input_pdf)
+        utils.to_md(solutions, self.output_rel_path(answers_pdf))
+        utils.pandoc_pdf(self.output_rel_path(answers_pdf),
+                self.output_rel_path(answers_pdf))
+        return answers_pdf
 
     def merge(self, reportlabfile, answersfile):
         output_pdf = PdfWriter()
@@ -79,10 +76,3 @@ class LazyAI:
         answersfilename = self.write_answers_to_pdf(self.extract_text_from_pdf())
         self.merge(titlepagename, answersfilename)
         return self.abs_path_output_pdf
-
-# Instantiate the LazyAI class with your LLM model
-#nelson_lazy_ai = LazyAI("homework", "solutions", "Calculus Homework", "nelsontodd", "Homework 4")
-#print("Solutions written to: {}".format(nelson_lazy_ai.solutions_pdf()))
-
-#grace_lazy_ai = LazyAI("studyguide", "solutions", "Nurse Study Guide", "graceann", "Homework 1")
-#print("Solutions written to: {}".format(nelson_lazy_ai.solutions_pdf()))
