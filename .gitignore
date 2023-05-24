@@ -2,3 +2,7 @@ env.sh
 *.swp
 __pycache__
 node_modules
+inputs/*
+!inputs/.gitkeep
+outputs/*
+!outputs/.gitkeep
