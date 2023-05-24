@@ -21,6 +21,8 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.units import cm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Frame, PageTemplate
+from functools import partial
+
 
 #PDF Style Sheet
 styles = getSampleStyleSheet()
@@ -39,20 +41,14 @@ headers = {
         "app_key": constants.mathpix_api_key
 }
 
-def output_rel_path(filename, extension=""):
-    return constants.output_path+filename+extension
-
-def input_rel_path(filename, extension=""):
-    return constants.input_path+filename+extension
-
-def mathpix_post_local_file(filename, _dir=constants.input_path, extension=".pdf", url="https://api.mathpix.com/v3/pdf"):
+def mathpix_post_local_file(filename,extension="", url="https://api.mathpix.com/v3/pdf"):
     pdf_id = requests.post(url,
             headers = headers,
             data={
             "options_json": json.dumps(options)
         },
         files={
-            "file": open(_dir+filename+extension,"rb")
+            "file": open(filename+extension,"rb")
         }
     )
     pdf_id_text = json.loads(pdf_id.text.encode("utf8"))
@@ -68,7 +64,7 @@ def mathpix_pdf_to_mmd(filename, pdf_id=""):
         time.sleep(2)
         conversion_response = requests.get(url, headers=headers)
     final_converted_to_mmd = conversion_response.text
-    with open(constants.output_path+filename+".mmd","wb") as mathfile:
+    with open(filename+".mmd","wb") as mathfile:
         mathfile.write(final_converted_to_mmd.encode("utf8"))
     return final_converted_to_mmd
 
@@ -81,7 +77,7 @@ def mathpix_img_to_txt(filename, img_id="", url="https://api.mathpix.com/v3/text
    #     conversion_response = requests.get(url, headers=headers)
    # final_converted_to_mmd = conversion_response.text
     print(img_id)
-    with open(constants.output_path+filename+".mmd","wb") as mathfile:
+    with open(filename+".mmd","wb") as mathfile:
         mathfile.write(img_id.text)
     return img_id
 
@@ -104,7 +100,7 @@ def pdf_to_txt(_input, _output):
 
 def to_csv(buffer, title):
     if type(buffer) == str:
-        filename = constants.output_path+'{}.csv'.format(title)
+        filename = '{}.csv'.format(title)
         with open(filename, 'w') as file:
             file.write(buffer)
         return filename
@@ -112,9 +108,9 @@ def to_csv(buffer, title):
         i = 1
         filenames = []
         for item in buffer:
-            filename = constants.output_path+'{}/{}.csv'.format(title, i)
-            if not os.path.exists(constants.output_path+'{}'.format(title)):
-                os.makedirs(constants.output_path+'{}'.format(title))
+            filename = '{}/{}.csv'.format(title, i)
+            if not os.path.exists('{}'.format(title)):
+                os.makedirs('{}'.format(title))
             with open(filename, 'w') as file:
                 file.write(item)
             i+=1
@@ -125,7 +121,7 @@ def to_csv(buffer, title):
 
 def to_md(buffer, title):
     if type(buffer) == str:
-        filename = constants.output_path+'{}.md'.format(title)
+        filename = '{}.md'.format(title)
         with open(filename, 'w') as file:
             file.write(buffer)
         return filename
@@ -133,9 +129,9 @@ def to_md(buffer, title):
         i = 1
         filenames = []
         for item in buffer:
-            filename = constants.output_path+'/{}/{}.md'.format(title, i)
-            if not os.path.exists(constants.output_path+'/{}'.format(title)):
-                os.makedirs(constants.output_path+'/{}'.format(title))
+            filename = '/{}/{}.md'.format(title, i)
+            if not os.path.exists('/{}'.format(title)):
+                os.makedirs('/{}'.format(title))
             with open(filename, 'w') as file:
                 file.write(item)
             i+=1
@@ -225,23 +221,23 @@ def pdf_subtitle(subtitle, formatstyle=styles):
 def pdf_title(title, formatstyle=styles):
     return Paragraph(title, formatstyle['Main Title'])
 
-def default_pdf_doc(output_filename, pagesize=A4):
+def default_pdf_doc(output_filename, fullname, pagesize=A4):
     doc = SimpleDocTemplate(output_filename, pagesize=A4)
     # Create a Frame to hold content
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='normal')
     # Create a custom PageTemplate with the onPage function
     page_template = PageTemplate(id='PageTemplate', frames=[frame],
-            onPage=create_header_footer)
+            onPage=partial(create_header_footer, user_full_name=fullname))
     # Add the custom PageTemplate to the SimpleDocTemplate
     doc.addPageTemplates([page_template])
     return doc
 
-def create_header_footer(canvas, doc):
+def create_header_footer(canvas, doc, user_full_name):
     # Set font, font size, and font color
     canvas.setFont("Helvetica", 10)
     canvas.setFillColor(colors.grey)
     page_width, page_height = A4
-    username = os.getenv("OPENAI_USER")
+    username = user_full_name#os.getenv("OPENAI_USER")
     headernote = "{}".format(datetime.now().strftime("%m/%d/%Y"))
     print(username)
     text_width = canvas.stringWidth(username)

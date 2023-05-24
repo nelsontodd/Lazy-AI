@@ -14,11 +14,11 @@ from io import StringIO, BytesIO
 
 
 if __name__ == '__main__':
-    hwdir, inputhw = "inputs/", "abi_SPLEM"
+    hwdir, inputhw = "inputs/", "graceann"
     hwpdf = utils.read_pdf(hwdir+inputhw)
     output_filename=constants.output_path+"{}.pdf".format(inputhw)
     doc = utils.default_pdf_doc(constants.output_path+"temp_qualitative_hw.pdf")
-    _items = [utils.pdf_title("SLP Homework"), Spacer(1, 24)]
+    _items = [utils.pdf_title("Grace Ann Homework"), Spacer(1, 24)]
     hwresponse = ""
     for page in hwpdf:
         print("""Inputting {} tokens into

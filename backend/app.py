@@ -6,6 +6,10 @@ from pymongo import MongoClient
 
 from authentication import create_token
 from schemas import LoginSchema, UserSchema
+import utils
+import constants
+import lazy_ai
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -54,6 +58,16 @@ def create_user():
     except ValidationError as err:
         return jsonify(message=err.messages), 400
     return jsonify(message="Server error"), 500
+
+@app.route('/homework', methods=['POST'])
+def create_solution():
+    data = request.files
+    hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Calculus Homework", "nelsontodd", "Nelson Morrow", "Homework 4")
+    print("Saving uploaded file to {}".format(hwsolve.input_rel_path(data['file'].filename)))
+    data['file'].save(hwsolve.input_rel_path(data['file'].filename))
+    solutions = hwsolve.solutions_pdf()
+    return jsonify(message="It works!")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
