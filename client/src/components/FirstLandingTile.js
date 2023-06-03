@@ -2,8 +2,6 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 
-import messages from '../imessages.png';
-
 
 const FirstLandingTile = () => {
   return (
