@@ -1,0 +1,64 @@
+// change the theme
+$primary: #458AF7;
+$secondary: #9F47F7;
+
+$font-size-base: 1rem;
+$h1-font-size: $font-size-base * 5;
+$h2-font-size: $font-size-base * 4;
+
+.trim {
+  max-width: auto;
+  overflow: hidden;
+}
+
+.gradient-background-bottom {
+  background: linear-gradient(rgba(145, 152, 229, 0), rgba(145, 152, 229, 0.1), rgba(145, 152, 229, 0.2), rgba(145, 152, 229, 0.4))
+}
+
+.gradient-background-top {
+  background: linear-gradient(rgba(145, 152, 229, 0.4), rgba(145, 152, 229, 0.2), rgba(145, 152, 229, 0.1), rgba(145, 152, 229, 0))
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.mt-3 {
+  margin-top: 3rem;
+}
+
+.pt-1 {
+  padding-top: 1rem;
+}
+
+.pt-3 {
+  padding-top: 3rem;
+}
+
+.pt-5 {
+  padding-top: 5rem;
+}
+
+.pt-8 {
+  padding-top: 8rem;
+}
+
+.pb-1 {
+  padding-bottom: 1rem;
+}
+
+.pb-5 {
+  padding-bottom: 5rem;
+}
+
+.pb-8 {
+  padding-bottom: 8rem;
+}
+
+.text-offwhite {
+  color: #FAF9FB;
+}
