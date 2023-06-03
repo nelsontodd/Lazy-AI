@@ -1,25 +1,25 @@
 from flask import Flask, jsonify, request
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from pymongo import MongoClient
 
 from authentication import create_token
 from schemas import LoginSchema, UserSchema
-import utils
-import constants
-import lazy_ai
+# import utils
+# import constants
+# import lazy_ai
 
 
 app = Flask(__name__)
+CORS(app)
+
 bcrypt = Bcrypt(app)
 
 client = MongoClient('localhost', 27017)
 db = client.flask_db
 users = db.users
 users.create_index('email', unique=True)
-
-CORS(app)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -49,7 +49,7 @@ def create_user():
         result = schema.load(data)
         user = users.find_one({'email': data['email']})
         if user:
-            return jsonify(message='This user already exists.'), 400
+            return jsonify(message="This user already exists."), 400
         else:
             password = data['password']
             data['password'] = bcrypt.generate_password_hash(password)
