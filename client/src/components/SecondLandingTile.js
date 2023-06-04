@@ -13,7 +13,11 @@ const SecondLandingTile = () => {
         <h3 className="pt-3 text-muted">
           Finish assignments with ease: whatever and whenever.
         </h3>
-        <Button className="mt-3 text-white"variant="secondary">
+        <Button
+          href="/signup"
+          className="mt-3 text-white"
+          variant="secondary"
+        >
           Sign Up
         </Button>
       </Container>

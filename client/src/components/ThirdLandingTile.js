@@ -11,7 +11,11 @@ const ThirdLandingTile = () => {
           Start now <br/> and finish now
         </h2>
         <h3 className="pt-3 text-offwhite">Get your assignments done and out of the way with the help of AI</h3>
-        <Button className="mt-3 text-white"variant="secondary">
+        <Button
+          href="/signup"
+          className="mt-3 text-white"
+          variant="secondary"
+        >
           Sign Up
         </Button>
       </Container>
