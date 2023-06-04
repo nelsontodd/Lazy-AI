@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -12,7 +12,7 @@ import { setAuthToken } from "../helpers/setAuthToken";
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ function Login() {
     try {
       const res = await axios.post("/login", formData);
       setAuthToken(res.data.token);
-      // navigate("/homework");
+      navigate("/homework");
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(JSON.stringify(errorMessage));
