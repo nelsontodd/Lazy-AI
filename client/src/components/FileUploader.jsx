@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { Document, Page } from 'react-pdf';
+import { Document, Page, pdfjs } from 'react-pdf';
 
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
+
+  useEffect(() => {
+    pdfjs.GlobalWorkerOptions.workerSrc=`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  });
 
   function onDocumentLoadSuccess(document) {
     const { numPages } = document;
@@ -44,6 +48,20 @@ const FileUploader = () => {
     }
   }
 
+  const renderPDF = (file) => {
+    if (file) {
+      return (
+        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+          {Array.from(new Array(1), (el, index) => (
+            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+          ))}
+        </Document>
+      );
+    } else {
+      return null;
+    }
+  }
+
   return (
     <Container>
       <Row>
@@ -71,13 +89,7 @@ const FileUploader = () => {
           </div>
         </Col>
         <Col xs={6}>
-          <div>
-            <Document file={file}>
-              {Array.from(new Array(1), (el, index) => (
-                <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-              ))}
-            </Document>
-          </div>
+          { renderPDF(file) }
         </Col>
       </Row>
     </Container>
