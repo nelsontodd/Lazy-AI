@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
 
 
 const FileUploader = () => {
@@ -52,8 +54,13 @@ const FileUploader = () => {
     if (file) {
       return (
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-          {Array.from(new Array(1), (el, index) => (
-            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page
+              style={{ width: '100%', height: 'auto'}}
+              key={`page_${index + 1}`}
+              pageNumber={index + 1}
+              wrap
+            />
           ))}
         </Document>
       );
