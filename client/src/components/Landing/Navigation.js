@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 
-import logo from '../logoipsum-298.svg';
+import logo from '../../logoipsum-298.svg';
 
 
 const Navigation = () => {
