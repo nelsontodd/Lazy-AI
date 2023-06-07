@@ -16,7 +16,7 @@ const Homework = () => {
   });
 
   return (
-    <Container>
+    <Container className="mt-5">
       <FileUploader />
     </Container>
   );
