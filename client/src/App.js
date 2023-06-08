@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
+import Login from './components/auth/Login';
+import SignUp from './components/auth/SignUp';
 import Homework from './components/Homework';
-import Login from './components/Login';
 import Landing from './components/Landing';
-import SignUp from './components/SignUp';
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:5000';
