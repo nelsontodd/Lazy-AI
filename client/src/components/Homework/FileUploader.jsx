@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+import RenderPDF from './RenderPDF';
+// import { Document, Page, pdfjs } from 'react-pdf';
+// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+// import 'react-pdf/dist/esm/Page/TextLayer.css';
 
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
 
-  useEffect(() => {
-    pdfjs.GlobalWorkerOptions.workerSrc=`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-  });
+  // useEffect(() => {
+  //   pdfjs.GlobalWorkerOptions.workerSrc=`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  // });
 
   function onDocumentLoadSuccess(document) {
     const { numPages } = document;
@@ -50,24 +52,24 @@ const FileUploader = () => {
     }
   }
 
-  const renderPDF = (file) => {
-    if (file) {
-      return (
-        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              style={{ width: '100%', height: 'auto'}}
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              wrap
-            />
-          ))}
-        </Document>
-      );
-    } else {
-      return null;
-    }
-  }
+  // const renderPDF = (file) => {
+  //   if (file) {
+  //     return (
+  //       <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+  //         {Array.from(new Array(numPages), (el, index) => (
+  //           <Page
+  //             style={{ width: '100%', height: 'auto'}}
+  //             key={`page_${index + 1}`}
+  //             pageNumber={index + 1}
+  //             wrap
+  //           />
+  //         ))}
+  //       </Document>
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   return (
     <Container>
@@ -96,7 +98,7 @@ const FileUploader = () => {
           </div>
         </Col>
         <Col xs={6}>
-          { renderPDF(file) }
+          <RenderPDF file={file}/>
         </Col>
       </Row>
     </Container>

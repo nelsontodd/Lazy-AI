@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import FileUploader from './FileUploader';
 
-import { isLoggedIn } from '../helpers/setAuthToken';
+import { isLoggedIn } from '../../helpers/setAuthToken';
 
 const Homework = () => {
   let navigate = useNavigate();
