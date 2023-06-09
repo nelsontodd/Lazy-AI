@@ -6,9 +6,9 @@ from pymongo import MongoClient
 
 from authentication import create_token
 from schemas import LoginSchema, UserSchema
-# import utils
-# import constants
-# import lazy_ai
+import utils
+import constants
+import lazy_ai
 
 
 app = Flask(__name__)
