@@ -6,8 +6,9 @@ from jwt import ExpiredSignatureError
 from marshmallow import ValidationError
 from pymongo import MongoClient
 
-from authentication import create_token, decode_token
+from authentication import create_token, get_user
 from schemas import LoginSchema, UserSchema
+from db import users
 import utils
 import constants
 import lazy_ai
@@ -17,11 +18,6 @@ app = Flask(__name__)
 CORS(app)
 
 bcrypt = Bcrypt(app)
-
-client = MongoClient('localhost', 27017)
-db = client.flask_db
-users = db.users
-users.create_index('email', unique=True)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -69,8 +65,7 @@ def create_solution():
         headers = request.headers
         if headers and  'x-auth-token' in headers:
             token = headers['x-auth-token']
-            user_id = decode_token(token)
-            user = users.find_one({'_id': ObjectId(user_id)})
+            user = get_user(token)
             data = request.files
             hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Speech Language Pathology Exam Study Guide", "nelsontodd", "Nelson Morrow", "Homework 4")
             data['file'].save(hwsolve.input_rel_path(data['file'].filename))
