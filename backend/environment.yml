@@ -18,6 +18,7 @@ dependencies:
   - pytz==2021.3
   - requests==2.26.0
   - six==1.16.0
+  - tiktoken==0.4.0
   - toml==0.10.2
   - tqdm==4.62.3
   - urllib3==1.26.7

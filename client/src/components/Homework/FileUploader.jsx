@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import RenderPDF from './RenderPDF';
+import { getCookies } from '../../helpers/setAuthToken';
 
 
 const FileUploader = () => {
@@ -24,12 +25,14 @@ const FileUploader = () => {
       try {
         formData.append('file', file);
         formData.append('fileName', file.name);
-        const config = {
+        const token = getCookies().token;
+        const headers = {
           headers: {
             'content-type': 'multipart/form-data',
+            'x-auth-token': token
           },
         };
-        await axios.post('/homework', formData, config);
+        await axios.post('/homework', formData, headers);
       } catch (err) {
         const errorMessage = err.response.data.message;
         alert(errorMessage);
