@@ -7,7 +7,7 @@ from marshmallow import ValidationError
 from pymongo import MongoClient
 
 from authentication import create_token, get_user
-from schemas import LoginSchema, UserSchema
+from schemas import FileSchema, LoginSchema, UserSchema
 from db import users
 import utils
 import constants
@@ -67,10 +67,21 @@ def create_solution():
             token = headers['x-auth-token']
             user = get_user(token)
             data = request.files
-            hwsolve = lazy_ai.LazyAI(data['file'].filename, "{} solutions".format(data['file'].filename), "Speech Language Pathology Exam Study Guide", "nelsontodd", "Nelson Morrow", "Homework 4")
-            data['file'].save(hwsolve.input_rel_path(data['file'].filename))
-            solutions = hwsolve.solutions_pdf()
-            return jsonify(message="It works!")
+            file = data['file']
+            result = FileSchema().load(file)
+            if file:
+                hwsolve = lazy_ai.LazyAI(
+                    file.filename, "{} solutions".format(file.filename),
+                    "Speech Language Pathology Exam Study Guide",
+                    "nelsontodd",
+                    "Nelson Morrow",
+                    "Homework 4"
+                )
+                file.save(hwsolve.input_rel_path(file.filename))
+                solutions = hwsolve.solutions_pdf()
+                return jsonify(message="It works!"), 200
+            else:
+                return jsonify(message='User did not provide file.'), 400
         else:
             return jsonify(message='User is not logged in.'), 400
     except ExpiredSignatureError as error:
