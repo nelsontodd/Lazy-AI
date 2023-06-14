@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 from authentication import create_token, get_user
 from schemas import FileSchema, LoginSchema, UserSchema
-from db import users
+from db import assignments, users
 import utils
 import constants
 import lazy_ai
@@ -68,8 +68,11 @@ def create_solution():
             user = get_user(token)
             data = request.files
             file = data['file']
-            result = FileSchema().load(file)
-            if file:
+            if file is not None and user is not None:
+                result = FileSchema().load(file)
+                assignments.insert_one(
+                    {'name': file.filename, 'user_id': user['_id']}
+                )
                 hwsolve = lazy_ai.LazyAI(
                     file.filename, "{} solutions".format(file.filename),
                     "Speech Language Pathology Exam Study Guide",
