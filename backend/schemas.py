@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields, validate
+import os
+from marshmallow import Schema, fields, validate, ValidationError
 
 class LoginSchema(Schema):
     email = fields.Email()
@@ -12,3 +13,11 @@ class UserSchema(Schema):
     password = fields.Str(
         load_only=True, validate=validate.Length(min=1, max=50)
     )
+
+class FileSchema:
+
+    def load(self, file):
+        if file.content_type != 'application/pdf':
+            raise ValidationError('Document must be a pdf.')
+        if file.seek(0, os.SEEK_END) > 5242880:
+            raise ValidationError('Maximum document file size 5MB.')
