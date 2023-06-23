@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 from authentication import create_token, get_user
 from schemas import FileSchema, LoginSchema, UserSchema
-from db import assignments, users
+from db import insert_assignment, users
 import utils
 import constants
 import lazy_ai
@@ -66,20 +66,23 @@ def register_routes(app):
                 file = data['file']
                 if file is not None and user is not None:
                     result = FileSchema().load(file)
-                    assignments.insert_one(
-                        {'name': file.filename, 'user_id': user['_id']}
-                    )
-                    hwsolve = lazy_ai.LazyAI(
-                        file.filename, "{} solutions".format(file.filename),
-                        "Speech Language Pathology Exam Study Guide",
-                        "nelsontodd",
-                        "Nelson Morrow",
-                        "Homework 4"
-                    )
-                    file.seek(0)
-                    file.save(hwsolve.input_rel_path(file.filename))
-                    solutions = hwsolve.solutions_pdf()
-                    return jsonify(message="It works!"), 200
+                    assignment_created = insert_assignment(user, file)
+                    if assignment_created:
+                        hwsolve = lazy_ai.LazyAI(
+                            file.filename, "{} solutions".format(file.filename),
+                            "Speech Language Pathology Exam Study Guide",
+                            "nelsontodd",
+                            "Nelson Morrow",
+                            "Homework 4"
+                        )
+                        file.seek(0)
+                        file.save(hwsolve.input_rel_path(file.filename))
+                        solutions = hwsolve.solutions_pdf()
+                        return jsonify(message="Assignment added."), 200
+                    else:
+                        return jsonify(
+                                message="User already has an assignment with this name."
+                                ), 400
                 else:
                     return jsonify(message='User did not provide file.'), 400
             else:
