@@ -76,6 +76,7 @@ def register_routes(app):
                         "Nelson Morrow",
                         "Homework 4"
                     )
+                    file.seek(0)
                     file.save(hwsolve.input_rel_path(file.filename))
                     solutions = hwsolve.solutions_pdf()
                     return jsonify(message="It works!"), 200
