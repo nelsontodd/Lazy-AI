@@ -6,7 +6,7 @@ import './App.css';
 import Login from './components/auth/Login';
 import SignUp from './components/auth/SignUp';
 import Homework from './components/Homework';
-import FileUploader from './components/Homework/FileUploader';
+import NewHomework from './components/Homework/NewHomework';
 import Landing from './components/Landing';
 
 
@@ -21,7 +21,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/homework" element={<Homework />} />
-          <Route path="/homework/new" element={<FileUploader />} />
+          <Route path="/homework/new" element={<NewHomework />} />
         </Routes>
       </Router>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
-import FileUploader from './FileUploader';
+import NewHomework from './NewHomework';
 
 import { isLoggedIn } from '../../helpers/setAuthToken';
 
@@ -17,7 +17,7 @@ const Homework = () => {
 
   return (
     <Container className="mt-5">
-      <FileUploader />
+      <NewHomework />
     </Container>
   );
 }

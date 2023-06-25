@@ -7,7 +7,7 @@ import RenderPDF from './RenderPDF';
 import { getCookies, isLoggedIn } from '../../helpers/setAuthToken';
 
 
-const FileUploader = () => {
+const NewHomework = () => {
   const [file, setFile] = useState(null);
   let navigate = useNavigate();
 
@@ -84,4 +84,4 @@ const FileUploader = () => {
   );
 }
 
-export default FileUploader;
+export default NewHomework;
