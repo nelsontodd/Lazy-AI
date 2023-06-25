@@ -53,7 +53,7 @@ def register_routes(app):
             return jsonify(message=err.messages), 400
         return jsonify(message="Server error"), 500
 
-    @app.route('/homework', methods=['POST'])
+    @app.route('/homework/new', methods=['POST'])
     def create_solution():
         #TODO: Get username, prompt for user full name, assignment description, title (optional)
         #Possibly: LLM Model selection

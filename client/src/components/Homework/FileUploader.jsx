@@ -40,7 +40,7 @@ const FileUploader = () => {
             'x-auth-token': token
           },
         };
-        await axios.post('/homework', formData, headers);
+        await axios.post('/homework/new', formData, headers);
       } catch (err) {
         const errorMessage = err.response.data.message;
         alert(errorMessage);
