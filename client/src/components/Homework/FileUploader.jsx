@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import RenderPDF from './RenderPDF';
-import { getCookies } from '../../helpers/setAuthToken';
+import { getCookies, isLoggedIn } from '../../helpers/setAuthToken';
 
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate('/login');
+    }
+  });
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -43,7 +51,7 @@ const FileUploader = () => {
   }
 
   return (
-    <Container>
+    <Container className="mt-5">
       <Row>
         <Col xs={6}>
           <div>
