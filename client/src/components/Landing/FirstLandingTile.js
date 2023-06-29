@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 
 const FirstLandingTile = () => {
   return (
-    <Container className="pb-5 pt-5">
+    <Container className="pb-5 pt-5 text-center">
       <h1>
         <b>
           Homework done

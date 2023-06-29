@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 
 const SecondLandingTile = () => {
   return (
-    <div className="gradient-background-top">
+    <div className="gradient-background-top text-center">
       <Container className="pt-8 pb-8">
         <h2>
           Your own personal tutor <br/> even at 3 in the morning
