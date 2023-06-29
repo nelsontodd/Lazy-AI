@@ -8,6 +8,13 @@ users = db.users
 users.create_index('email', unique=True)
 
 
+def get_all_assignments_for_user(user):
+    user_id = user['_id']
+    assignments_list = list(
+        assignments.find({'user_id': user_id}, {'_id': 0 , 'user_id': 0})
+    )
+    return assignments_list
+
 def insert_assignment(user, file):
     filename = file.filename
     user_id = user['_id']
