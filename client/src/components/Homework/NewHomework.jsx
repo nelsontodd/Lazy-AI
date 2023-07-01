@@ -9,6 +9,7 @@ import { getCookies, isLoggedIn } from '../../helpers/setAuthToken';
 
 const NewHomework = () => {
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const NewHomework = () => {
   const onFileUpload = async (e) => {
     e.preventDefault();
     if (file) {
+      setIsLoading(true);
       const formData = new FormData();
       try {
         formData.append('file', file);
@@ -45,6 +47,7 @@ const NewHomework = () => {
         const errorMessage = err.response.data.message;
         alert(errorMessage);
       }
+      setIsLoading(false);
     } else {
       alert('No file selected.');
     }
@@ -67,6 +70,7 @@ const NewHomework = () => {
               </Form.Group>
               <p>Select a file smaller than 5MB before uploading</p>
               <Button
+                disabled={isLoading}
                 className="text-white"
                 variant="primary"
                 onClick={(e) => onFileUpload(e)}
