@@ -5,9 +5,10 @@ from jwt import ExpiredSignatureError
 from marshmallow import ValidationError
 from pymongo import MongoClient
 
-from authentication import create_token, get_user
+from authentication import create_token, get_user, verify_authentication
 from schemas import FileSchema, LoginSchema, UserSchema
-from db import get_all_assignments_for_user, insert_assignment, users
+from db import (get_all_assignments_for_user, get_assignment_for_user,
+                insert_assignment, users)
 import utils
 import constants
 import lazy_ai
@@ -74,14 +75,13 @@ def register_routes(app):
         return jsonify(message="Server error"), 500
 
     @app.route('/homework/new', methods=['POST'])
-    def create_solution():
+    def create_assignment():
         #TODO: Get username, prompt for user full name, assignment description, title (optional)
         #Possibly: LLM Model selection
         try:
             headers = request.headers
-            if headers and  'x-auth-token' in headers:
-                token = headers['x-auth-token']
-                user = get_user(token)
+            user = verify_authentication(headers)
+            if user is not None:
                 data = request.files
                 file = data['file']
                 if file is not None and user is not None:
@@ -112,3 +112,41 @@ def register_routes(app):
         except ValidationError as err:
             return jsonify(message=err.messages), 400
         return jsonify(message="Server error"), 500
+
+    @app.route('/homework/solution', methods=['POST'])
+    def assignment_solution():
+        try:
+            headers = request.headers
+            user = verify_authentication(headers)
+            if user is not None:
+                data = request.get_json()
+                filename = data['assignmentName']
+                if filename is not None:
+                    assignment = get_assignment_for_user(
+                        user, filename
+                    )
+                    if utils.file_is_saved(filename, 'nelsontodd'):
+                        hwsolve = lazy_ai.LazyAI(
+                            filename, '{} solutions'.format(
+                                filename
+                            ),
+                            'Speech Language Pathology Exam Study Guide',
+                            'nelsontodd',
+                            'Nelson Morrow',
+                            'Homework 4'
+                        )
+                        solutions = hwsolve.solutions_pdf()
+                        return jsonify(message='It works.'), 200
+                    else:
+                        return jsonify(
+                                   message='File is not saved on system.'
+                               ), 400
+                else:
+                    return jsonify(message='Invalid credentials'), 400
+            else:
+                return jsonify(message='User is not logged in.'), 400
+        except ExpiredSignatureError as error:
+            return jsonify(message='User session expired.'), 400
+        except ValidationError as err:
+            return jsonify(message=err.messages), 400
+        return jsonify(message='Server error'), 500

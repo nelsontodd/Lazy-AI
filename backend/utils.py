@@ -21,6 +21,7 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.units import cm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Frame, PageTemplate
+from werkzeug.datastructures import FileStorage
 from functools import partial
 
 
@@ -31,7 +32,7 @@ styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
 styles.add(ParagraphStyle(name="Main Title",fontSize=36, leading=30, alignment=TA_CENTER, spaceAfter=20))
 styles.add(ParagraphStyle(name="Sub Title",fontSize=20, leading=30, alignment=TA_CENTER, spaceAfter=20))
 
-#Mathpix 
+#Mathpix
 options = {
     "math_inline_delimiters": ["$", "$"],
     "rm_spaces": True
@@ -260,7 +261,7 @@ def create_header_footer(canvas, doc, user_full_name):
     headernote = "{}".format(datetime.now().strftime("%m/%d/%Y"))
     print(username)
     text_width = canvas.stringWidth(username)
-    
+
     # Calculate the x position for the right-aligned text
     page_width = letter[0]
     x = page_width - text_width - .75*cm
@@ -278,3 +279,14 @@ def create_header_footer(canvas, doc, user_full_name):
     x = page_width - 4 * cm
     canvas.drawString(x, y, page_number_text)
 
+def file_is_saved(filename, username):
+    try:
+        file_path = '{}{}/{}'.format(
+                    constants.input_path, username, filename
+                )
+        file = open(file_path)
+        if file:
+            return True
+    except:
+        return False
+    return False
