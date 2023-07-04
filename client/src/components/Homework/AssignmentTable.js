@@ -38,7 +38,7 @@ const AssignmentTable = () => {
           'x-auth-token': token
         },
       };
-      const res = await axios.post("/homework/solution", formData, headers);
+      const res = await axios.post('/homework/solution', formData, headers);
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(JSON.stringify(errorMessage));
@@ -59,7 +59,7 @@ const AssignmentTable = () => {
             <td>{assignment.name}</td>
             <td>
               <Button
-                className="text-white"
+                className='text-white'
                 onClick={(e) => handleButtonClick(e, index)}>
                 Get Solution
               </Button>
