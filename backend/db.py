@@ -15,6 +15,13 @@ def get_all_assignments_for_user(user):
     )
     return assignments_list
 
+def get_assignment_for_user(user, filename):
+    user_id = user['_id']
+    assignment = assignments.find_one(
+        {'user_id': user_id, 'name': filename}
+    )
+    return assignment
+
 def insert_assignment(user, file):
     filename = file.filename
     user_id = user['_id']
