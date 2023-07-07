@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { saveAs } from 'file-saver';
 
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 
-import { getCookies, isLoggedIn } from '../../helpers/setAuthToken';
+import { getCookies } from '../../helpers/setAuthToken';
 
 const AssignmentTable = () => {
-  let navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
@@ -34,11 +32,14 @@ const AssignmentTable = () => {
       const formData = { assignmentName }
       const token = getCookies().token;
       const headers = {
+        responseType: 'blob',
         headers: {
           'x-auth-token': token
         },
       };
       const res = await axios.post('/homework/solution', formData, headers);
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      saveAs(blob);
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(JSON.stringify(errorMessage));
