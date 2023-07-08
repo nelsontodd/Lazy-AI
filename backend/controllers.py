@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from flask import jsonify, request
+from flask import jsonify, send_file, request
 from flask_bcrypt import Bcrypt
 from jwt import ExpiredSignatureError
 from marshmallow import ValidationError
@@ -135,8 +135,8 @@ def register_routes(app):
                             'Nelson Morrow',
                             'Homework 4'
                         )
-                        solutions = hwsolve.solutions_pdf()
-                        return jsonify(message='It works.'), 200
+                        solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
+                        return send_file(solutions)
                     else:
                         return jsonify(
                                    message='File is not saved on system.'
