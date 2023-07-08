@@ -39,7 +39,7 @@ const AssignmentTable = () => {
       };
       const res = await axios.post('/homework/solution', formData, headers);
       const blob = new Blob([res.data], { type: 'application/pdf' });
-      saveAs(blob);
+      saveAs(blob, assignmentName);
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(JSON.stringify(errorMessage));
