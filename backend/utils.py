@@ -21,7 +21,6 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.units import cm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Frame, PageTemplate
-from werkzeug.datastructures import FileStorage
 from functools import partial
 
 
