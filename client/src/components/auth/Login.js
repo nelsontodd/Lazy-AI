@@ -58,7 +58,7 @@ function Login() {
               />
             </Form.Group>
 
-            <Button className="mt-3" variant="primary" type="submit">
+            <Button className="mt-3 text-white" variant="primary" type="submit">
               Sign In
             </Button>
           </Form>
