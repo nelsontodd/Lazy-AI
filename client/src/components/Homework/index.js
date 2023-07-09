@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Table from 'react-bootstrap/Table';
 
 import AssignmentTable from './AssignmentTable';
-import { getCookies, isLoggedIn } from '../../helpers/setAuthToken';
+import { isLoggedIn } from '../../helpers/setAuthToken';
 
 const Homework = () => {
   let navigate = useNavigate();
