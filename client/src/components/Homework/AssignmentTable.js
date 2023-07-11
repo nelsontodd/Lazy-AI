@@ -39,11 +39,16 @@ const AssignmentTable = () => {
       };
       const res = await axios.post('/homework/solution', formData, headers);
       const blob = new Blob([res.data], { type: 'application/pdf' });
-      saveAs(blob, assignmentName);
+      saveAs(blob, createSolutionsDocumentName(assignmentName));
     } catch (err) {
       const errorMessage = err.response.data.message;
       alert(JSON.stringify(errorMessage));
     }
+  }
+
+  const createSolutionsDocumentName = (filename) => {
+    const assignmentName = filename.substring(0, filename.indexOf('.pdf'));
+    return assignmentName + '_solutions.pdf';
   }
 
   return (
