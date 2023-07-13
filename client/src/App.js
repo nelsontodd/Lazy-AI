@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
-import Login from './components/auth/Login';
-import SignUp from './components/auth/SignUp';
 import Homework from './components/Homework';
 import Landing from './components/Landing';
 
@@ -17,8 +15,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
           <Route path="/homework" element={<Homework />} />
         </Routes>
       </Router>
