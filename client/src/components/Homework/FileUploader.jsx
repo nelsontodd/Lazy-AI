@@ -3,11 +3,11 @@ import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import RenderPDF from './RenderPDF';
-import { getCookies } from '../../helpers/setAuthToken';
 
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -21,15 +21,14 @@ const FileUploader = () => {
   const onFileUpload = async (e) => {
     e.preventDefault();
     if (file) {
+      setIsLoading(true);
       const formData = new FormData();
       try {
         formData.append('file', file);
         formData.append('fileName', file.name);
-        const token = getCookies().token;
         const headers = {
           headers: {
             'content-type': 'multipart/form-data',
-            'x-auth-token': token
           },
         };
         await axios.post('/homework', formData, headers);
@@ -37,6 +36,7 @@ const FileUploader = () => {
         const errorMessage = err.response.data.message;
         alert(errorMessage);
       }
+      setIsLoading(false);
     } else {
       alert('No file selected.');
     }
@@ -59,6 +59,7 @@ const FileUploader = () => {
               </Form.Group>
               <p>Select a file smaller than 5MB before uploading</p>
               <Button
+                disabled={isLoading}
                 className="text-white"
                 variant="primary"
                 onClick={(e) => onFileUpload(e)}
