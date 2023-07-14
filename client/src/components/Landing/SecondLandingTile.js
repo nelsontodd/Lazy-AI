@@ -14,11 +14,11 @@ const SecondLandingTile = () => {
           Finish assignments with ease: whatever and whenever.
         </h3>
         <Button
-          href="/signup"
+          href="/homework"
           className="mt-3 text-white"
           variant="secondary"
         >
-          Sign Up
+          Get Solutions
         </Button>
       </Container>
     </div>

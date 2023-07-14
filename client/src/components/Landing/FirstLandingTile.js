@@ -15,8 +15,8 @@ const FirstLandingTile = () => {
         </b>
       </h1>
       <h3 className="text-muted">Get help on your homework and assignments.</h3>
-      <Button href="/signup" className="mt-3 text-white">
-        Sign Up
+      <Button href="/homework" className="mt-3 text-white">
+        Get Solutions
       </Button>
       <br/>
     </Container>
