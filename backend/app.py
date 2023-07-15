@@ -62,15 +62,18 @@ def process_payment():
                 'source_id': token,
                 'idempotency_key': str(uuid4()),
                 'amount_money': {
-                    'amount': 100,  # $1.00 charge
+                    'amount': 100, # $1.00 charge
                     'currency': 'USD',
                 },
             }
         )
-        return jsonify(message='Payment route'), 200
+        if create_payment_response.is_success():
+            return jsonify(message='Successful payment.'), 200
+        elif create_payment_response.is_error():
+            return jsonify(message='Payment error.'), 400
     else:
         return jsonify(
-                message='Please enter valid payment information'
+                    message='Please enter valid payment information'
                 ), 500
 
 
