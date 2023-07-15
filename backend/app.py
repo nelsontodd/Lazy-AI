@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS, cross_origin
 from jwt import ExpiredSignatureError
 from marshmallow import ValidationError
@@ -33,8 +33,9 @@ def create_solution():
             )
             file.seek(0)
             file.save(hwsolve.input_rel_path(file.filename))
-            solutions = hwsolve.solutions_pdf()
-            return jsonify(message="It works!"), 200
+            solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
+            print('Solutions: ', solutions)
+            return send_file(solutions)
         else:
             return jsonify(message='User did not provide file.'), 400
     except ValidationError as err:
