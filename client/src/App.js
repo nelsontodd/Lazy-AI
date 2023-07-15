@@ -5,6 +5,7 @@ import './App.css';
 
 import Homework from './components/Homework';
 import Landing from './components/Landing';
+import Payments from './components/Payments';
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:5000';
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/homework" element={<Homework />} />
+          <Route path="/payments" element={<Payments />} />
         </Routes>
       </Router>
     </div>
