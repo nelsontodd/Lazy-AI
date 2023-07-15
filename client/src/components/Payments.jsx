@@ -10,17 +10,19 @@ function Payments() {
       <PaymentForm
         applicationId="sandbox-sq0idb-VjaXQsDt014XTRq4IY14aw"
         cardTokenizeResponseReceived={ async (token, verifiedBuyer) => {
-          console.log('token:', token);
-          console.log('verifiedBuyer:', verifiedBuyer);
-          const formData = new FormData();
-          formData.append('sourceId', token.token);
-          const headers = {
-            headers: {
-              'content-type': 'application/json',
-            },
-          };
-          const res = await axios.post('/payment', formData, headers);
-          console.log(JSON.stringify(res));
+          try {
+            const formData = new FormData();
+            formData.append('sourceId', token.token);
+            const headers = {
+              headers: {
+                'content-type': 'application/json',
+              },
+            };
+            await axios.post('/payment', formData, headers);
+          } catch (err) {
+            const errorMessage = err.response.data.message;
+            alert(errorMessage);
+          }
         }}
         locationId='XXXXXXXXXX'
       >
