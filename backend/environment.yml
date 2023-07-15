@@ -26,6 +26,8 @@ dependencies:
   - reportlab==3.6.12
   - pip
   - pip:
+    - aiofiles
+    - configparser
     - et-xmlfile==1.1.0
     - langchain==0.0.129
     - Flask==2.1.1
@@ -35,3 +37,5 @@ dependencies:
     - marshmallow==3.19.0
     - pyjwt==2.6.0
     - pymongo==4.3.3
+    - squareup==28.0.1.20230608
+    - uuid
