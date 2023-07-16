@@ -13,11 +13,6 @@ const Navigation = () => {
       <Container>
         <Navbar.Brand><img src={logo} alt="Logo"/></Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
-          <Button href="/faq" className="bg-secondary text-white">
-            <b>FAQ</b>
-          </Button>
-          &nbsp;
-          &nbsp;
           <Button href="/homework" className="text-white">
             <b>Get Solutions</b>
           </Button>
