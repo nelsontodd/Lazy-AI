@@ -8,13 +8,13 @@ const FirstLandingTile = () => {
     <Container className="pb-5 pt-5">
       <h1>
         <b>
-          Homework done
+          Homework Solutions
           <span className="text-primary">
-            <br/>today.
+            <br/>for $1.
           </span>
         </b>
       </h1>
-      <h3 className="text-muted">Get help on your homework and assignments.</h3>
+      <h3 className="text-muted">GPT 4 Solutions Manual For any Subject.</h3>
       <Button href="/homework" className="mt-3 text-white">
         Get Solutions
       </Button>
