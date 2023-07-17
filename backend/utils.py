@@ -6,9 +6,8 @@ import csv
 import openai
 import constants
 import tiktoken
+import pypdf
 from datetime import datetime
-from pyxpdf import Document, Page, Config
-from pyxpdf.xpdf import TextControl
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, ListFlowable, ListItem
 from reportlab.lib.styles import getSampleStyleSheet
@@ -167,13 +166,14 @@ def from_csv(filename, delimiter="|"):
 
 def read_pdf(filename):
     if ".pdf" not in filename:
-        filename+=".pdf"
+        filename += ".pdf"
     with open(filename, 'rb') as fp:
-        doc = Document(fp)
-    control = TextControl(mode = "physical")
-    txt = []
-    for page in doc:
-        txt.append(page.text(control=control))
+        reader = pypdf.PdfFileReader(fp)
+        num_pages = reader.numPages
+        txt = []
+        for page_num in range(num_pages):
+            page = reader.getPage(page_num)
+            txt.append(page.extractText())
     return txt
 
 def transcribe_audio(audiofile):
@@ -202,14 +202,50 @@ def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
       raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
   See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
 
-def promptGPT(systemprompt, userprompt, model=constants.model):
+def promptGPT_safe(messages, model="gpt-3.5-turbo-16k", function_call=None, functions=None):
+    completion = 0
+    i = 0
+    while (completion == 0):
+        completion = promptGPT(messages, function_call=function_call, functions=functions)
+        if i == 30: #Arbitrarily chosen
+            raise Exception("OpenAI Timeout Error.")
+        i+=1
+    return completion
+
+def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, function_call=None):
+    """
+    systemprompt: text
+    userprompt: text
+    functions: list of functions of form:
+    {
+        "name":,
+        "description":,
+        "parameters":{
+                        "type":"object",
+                        "properties": {"property name":{"type": "property type
+                        (str,int,etc)","description":"description of property"}},
+                        "required": [list of required properties by name]
+                        }
+    }
+    function_call: {"name": "name of function from functions to call"}
+    """
     print("""Inputting {} tokens into {}.""".format(num_tokens_from_messages(systemprompt+userprompt), model))
-    response = openai.ChatCompletion.create(
-      model=model,
-      messages=[
-        {"role": "system", "content": systemprompt},
-        {"role": "user", "content": userprompt}])
-    return response["choices"][0]["message"]["content"]
+    if functions == None:
+        response = openai.ChatCompletion.create(
+          model=model,
+          messages=[
+            {"role": "system", "content": systemprompt},
+            {"role": "user", "content": userprompt}])
+        return response["choices"][0]["message"]["content"]
+    else:
+        response = openai.ChatCompletion.create(
+          model=model,
+          functions=functions,
+          function_call=function_call,
+          messages=[
+            {"role": "system", "content": systemprompt},
+            {"role": "user", "content": userprompt}])
+        return str(response["choices"][0]["message"]["function_call"])
 
 def pdf_unordered_list(_dict, formatstyle=styles):
     _list = []

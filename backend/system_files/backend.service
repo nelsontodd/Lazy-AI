@@ -1,0 +1,12 @@
+[Unit]
+Description=Lazy AI Flask Backend
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Lazy-AI
+ExecStart=/home/ubuntu/Lazy-AI/backend/system_files/backend.sh
+
+
+[Install]
+WantedBy=multi-user.target

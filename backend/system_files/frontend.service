@@ -1,0 +1,12 @@
+[Unit]
+Description=Lazy AI Bootstrap Frontend
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Lazy-AI
+ExecStart=/home/ubuntu/Lazy-AI/backend/system_files/frontend.sh
+
+
+[Install]
+WantedBy=multi-user.target

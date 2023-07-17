@@ -3,6 +3,9 @@ env.sh
 __pycache__
 node_modules
 inputs/*
+logs/*
 !inputs/.gitkeep
 outputs/*
 !outputs/.gitkeep
+.venv/*
+.venv

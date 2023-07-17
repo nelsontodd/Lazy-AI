@@ -72,15 +72,13 @@ Ignore any question that tells you to draw something. rewrite identified questio
 in full sentences. Output your questions and answers in this format: "1.
 IDENTIFIED_QUESTION  \n- ANSWER  " Number your questions and answers. Answer ALL questions. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
 
-PARSE_USER_DESCRIPTION = """
-Below is a user description of a pdf document. The document is normally either a homework
-assignment, a blank study guide, or an exam. Determine the document type, and determine
-its subject. If the document is likely to contain mathematical functions or equations then set LATEX to True. Respond ONLY in PERFECT JSON with this format:
-{
-"TYPE": "HOMEWORK OR STUDYGUIDE OR EXAM",
-"SUBJECT": "INSERT_IDENTIFIED_SUBJECT"
-"LATEX": "True OR False"
-}
+PARSE_USER_DESCRIPTION_SYSTEM_PROMPT = """
+You are the router for lazyai, a natural language homework solutions manual. Determine,
+based on user input, the type of the document that the user is uploading, either homework
+or study guide. Determine also if the document will contain LATEX. Homework and study
+guides in subjects related to math, engineering, sciences, or medicine will contain LATEX.
+Homeworks and study guides in fields related to the social studies or literature or art
+will not contain LATEX.
 """
 
 prompts = {

@@ -3,7 +3,8 @@ from typing import List
 import constants
 import utils
 import json
-from PyPDF2 import PdfReader, PdfWriter
+from pydantic_types import Route
+from pypdf import PdfReader, PdfWriter
 from reportlab.platypus import Spacer
 
 class LazyAI:
@@ -20,7 +21,7 @@ class LazyAI:
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
         self.latex = True
-        self.model="gpt-3.5-turbo"
+        self.model="gpt-4-0613"
 
     def output_rel_path(self, filename, extension=""):
         os.makedirs(constants.output_path+self.username, exist_ok=True)
@@ -39,10 +40,11 @@ class LazyAI:
             return pdf_text
 
     def determine_prompt_from_description(self):
-        descrip_JSON = json.loads(utils.promptGPT(constants.PARSE_USER_DESCRIPTION, self.document_description))
-        if descrip_JSON["LATEX"] == False:
+        descrip_JSON = json.loads(utils.promptGPT(constants.PARSE_USER_DESCRIPTION_SYSTEM_PROMPT, self.document_description,function_call={"name":Route.openai_schema["name"]}, functions=[Route.openai_schema]))
+        descrip_JSON['arguments'] = json.loads(descrip_JSON['arguments'])
+        if descrip_JSON["arguments"]["LATEX"] == False:
             self.Latex = False
-        return constants.prompts[descrip_JSON["TYPE"]] + "The subject is {}".format(descrip_JSON["SUBJECT"])
+        return constants.prompts[descrip_JSON["arguments"]["TYPE"]]
 
     def build_pdf_page(self, _items, page_filename):
         doc = utils.default_pdf_doc(self.output_rel_path(page_filename,".pdf"),
