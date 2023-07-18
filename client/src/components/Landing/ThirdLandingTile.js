@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 const ThirdLandingTile = () => {
   return (
     <div className="bg-primary">
-      <Container className="pt-8 pb-8">
+      <Container className="pt-8 pb-8 text-center">
         <h2 className="text-white">
           Start now <br/> and finish now
         </h2>
