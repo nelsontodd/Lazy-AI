@@ -9,7 +9,7 @@ import RenderPDF from './RenderPDF';
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
-  const [hasLatex, setHasLatex] = useState(false);
+  const [hasLatex, setHasLatex] = useState(true);
   const [isHomework, setIsHomework] = useState(true);
   const [name, setName] = useState(null);
   const [processingSolution, setProcessingSolution] = useState(false);
