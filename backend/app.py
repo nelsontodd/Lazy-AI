@@ -1,18 +1,13 @@
 import json
 import os
 
-from bson.objectid import ObjectId
 from flask import Flask, jsonify, request, send_file
-from flask_cors import CORS, cross_origin
-from jwt import ExpiredSignatureError
+from flask_cors import CORS
 from marshmallow import ValidationError
-from pymongo import MongoClient
 from square.client import Client
 from uuid import uuid4
 
-from authentication import create_token, get_user
-from schemas import FileSchema, LoginSchema, UserSchema
-from db import assignments, users
+from schemas import FileSchema
 import utils
 import constants
 import lazy_ai
