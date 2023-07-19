@@ -11,8 +11,9 @@ const FileUploader = () => {
   const [file, setFile] = useState(null);
   const [hasLatex, setHasLatex] = useState(true);
   const [isHomework, setIsHomework] = useState(true);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState('');
   const [processingSolution, setProcessingSolution] = useState(false);
+  const [title, setTitle] = useState('');
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -41,6 +42,7 @@ const FileUploader = () => {
         formData.append('isHomework', isHomework);
         formData.append('name', name);
         formData.append('sourceId', token.token);
+        formData.append('title', title);
         setProcessingSolution(true);
         const headers = {
           responseType: 'blob',
@@ -85,14 +87,25 @@ const FileUploader = () => {
                 />
                 <p>Select a file smaller than 5MB before uploading</p>
                 <p className="mt-3">
-                  <b>Full Name</b>
+                  <b>What name do you want on the solutions? (Optional)</b>
                 </p>
                 <Form.Control
                   type="text"
                   id="name"
                   value={name}
-                  placeholder="Your Full Name"
+                  placeholder="Your Name"
                   onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <p className="mt-3">
+                  <b>Title (Optional)</b>
+                </p>
+                <Form.Control
+                  type="text"
+                  id="title"
+                  value={title}
+                  placeholder="Your Assignment Name"
+                  onChange={(e) => setTitle(e.target.value)}
                   required
                 />
                 <p className="mt-3">
