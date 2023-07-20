@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 from bson.objectid import ObjectId
 from flask import Flask, jsonify, request, send_file
@@ -33,25 +34,28 @@ def create_solution():
         file = request.files['file']
         token = request.form['sourceId']
         if file is not None and token is not None:
+            print(f"Got file {file.filename}", file=sys.stderr)
+            hwsolve = lazy_ai.LazyAI(
+                    file.filename, "{} solutions".format(file.filename),
+                    "Speech Language Pathology Exam Study Guide",
+                    "nelsontodd",
+                    "Nelson Morrow",
+                    "Homework 4"
+                    )
+            cost = hwsolve.determine_cost() #Based on token count/OCR fees
+            print(f"Cost for this file {file.filename} will be {cost}", file=sys.stderr)
             create_payment_response = client.payments.create_payment(
                 body={
                     'source_id': token,
                     'idempotency_key': str(uuid4()),
                     'amount_money': {
-                        'amount': 100, # $1.00 charge
+                        'amount': cost, # $1.00 charge
                         'currency': 'USD',
                     },
                 }
             )
             if create_payment_response.is_success():
                 result = FileSchema().load(file)
-                hwsolve = lazy_ai.LazyAI(
-                        file.filename, "{} solutions".format(file.filename),
-                        "Speech Language Pathology Exam Study Guide",
-                        "nelsontodd",
-                        "Nelson Morrow",
-                        "Homework 4"
-                        )
                 file.seek(0)
                 file.save(hwsolve.input_rel_path(file.filename))
                 solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
