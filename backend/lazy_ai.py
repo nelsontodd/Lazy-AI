@@ -9,7 +9,7 @@ from reportlab.platypus import Spacer
 
 class LazyAI:
     def __init__(self, input_pdf, output_pdf, document_description, username,
-            user_full_name, document_title=""):
+            user_full_name, document_title="", latex=True):
         self.document_description = document_description
         self.document_title = document_title
         self.username = username
@@ -20,7 +20,7 @@ class LazyAI:
 
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
-        self.latex = True
+        self.latex = latex
         self.model="gpt-4-0613"
 
     def output_rel_path(self, filename, extension=""):
@@ -37,7 +37,7 @@ class LazyAI:
             return pdf_mmd
         else:
             text = utils.read_pdf(self.abs_path_input_pdf)
-            return pdf_text
+            return text
 
     def determine_prompt_from_description(self):
         descrip_JSON = json.loads(utils.promptGPT(constants.PARSE_USER_DESCRIPTION_SYSTEM_PROMPT, self.document_description,function_call={"name":Route.openai_schema["name"]}, functions=[Route.openai_schema]))

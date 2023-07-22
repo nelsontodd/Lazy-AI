@@ -28,7 +28,11 @@ def create_solution():
     #Possibly: LLM Model selection
     try:
         file = request.files['file']
+        has_latex = request.form['hasLatex']
+        is_homework = request.form['isHomework']
+        name = request.form['name']
         token = request.form['sourceId']
+        title = request.form['title']
         if file is not None and token is not None:
             create_payment_response = client.payments.create_payment(
                 body={
@@ -46,8 +50,8 @@ def create_solution():
                         file.filename, "{} solutions".format(file.filename),
                         "Speech Language Pathology Exam Study Guide",
                         "nelsontodd",
-                        "Nelson Morrow",
-                        "Homework 4"
+                        name,
+                        title,
                         )
                 file.seek(0)
                 file.save(hwsolve.input_rel_path(file.filename))

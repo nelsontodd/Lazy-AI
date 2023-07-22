@@ -168,12 +168,12 @@ def read_pdf(filename):
     if ".pdf" not in filename:
         filename += ".pdf"
     with open(filename, 'rb') as fp:
-        reader = pypdf.PdfFileReader(fp)
-        num_pages = reader.numPages
+        reader = pypdf.PdfReader(fp)
+        num_pages = len(reader.pages)
         txt = []
         for page_num in range(num_pages):
-            page = reader.getPage(page_num)
-            txt.append(page.extractText())
+            page = reader.pages[page_num]
+            txt.append(page.extract_text())
     return txt
 
 def transcribe_audio(audiofile):
