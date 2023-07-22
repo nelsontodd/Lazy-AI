@@ -73,12 +73,12 @@ const FileUploader = () => {
 
   return (
     <Container>
-      <Row>
-        <Col xs={6}>
-          <div>
-            <h5>{headerText()}</h5>
+      <Form.Group>
+        <Row>
+          <Col xs={6}>
             <div>
-              <Form.Group>
+              <h5>{headerText()}</h5>
+              <div>
                 <Form.Control
                   type="file"
                   accept=".pdf"
@@ -128,42 +128,48 @@ const FileUploader = () => {
                   onChange={handleLatexRadioButton}
                   checked={hasLatex === false}
                 />
-                <p className="mt-3">
-                  <b>Is this a homework assignment or a study guide?</b>
-                </p>
-                <Form.Check
-                  value={true}
-                  type="radio"
-                  aria-label="radio 1"
-                  label="Homework Assignment"
-                  onChange={handleHomeworkRadioButton}
-                  checked={isHomework === true}
-                />
-                <Form.Check
-                  value={false}
-                  type="radio"
-                  aria-label="radio 2"
-                  label="Study Guide"
-                  onChange={handleHomeworkRadioButton}
-                  checked={isHomework === false}
-                />
-              </Form.Group>
-              <h6 className="mt-3">Get solutions for $1</h6>
-              <PaymentForm
-                applicationId="sandbox-sq0idb-VjaXQsDt014XTRq4IY14aw"
-                cardTokenizeResponseReceived={
-                  (token, verifiedBuyer) => onSubmit(token, verifiedBuyer)
-                }
-                locationId='XXXXXXXXXX'
-              >
-                <CreditCard/>
-              </PaymentForm>
+              </div>
             </div>
-          </div>
-        </Col>
-        <Col xs={6}>
+          </Col>
+          <Col xs={6}>
+            <p className="mt-3">
+              <b>Is this a homework assignment or a study guide?</b>
+            </p>
+            <Form.Check
+              value={true}
+              type="radio"
+              aria-label="radio 1"
+              label="Homework Assignment"
+              onChange={handleHomeworkRadioButton}
+              checked={isHomework === true}
+            />
+            <Form.Check
+              value={false}
+              type="radio"
+              aria-label="radio 2"
+              label="Study Guide"
+              onChange={handleHomeworkRadioButton}
+              checked={isHomework === false}
+            />
+            <h6 className="mt-3">Get solutions for $1</h6>
+            <PaymentForm
+              applicationId="sandbox-sq0idb-VjaXQsDt014XTRq4IY14aw"
+              cardTokenizeResponseReceived={
+                (token, verifiedBuyer) => onSubmit(token, verifiedBuyer)
+              }
+              locationId='XXXXXXXXXX'
+            >
+              <CreditCard/>
+            </PaymentForm>
+          </Col>
+        </Row>
+      </Form.Group>
+      <Row>
+        <Col xs={2}/>
+        <Col xs={8}>
           <RenderPDF file={file}/>
         </Col>
+        <Col xs={2}/>
       </Row>
     </Container>
   );
