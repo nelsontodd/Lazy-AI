@@ -1,6 +1,7 @@
 import json
 import os
 
+import clamd
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from marshmallow import ValidationError
@@ -45,18 +46,25 @@ def create_solution():
                 }
             )
             if create_payment_response.is_success():
-                result = FileSchema().load(file)
-                hwsolve = lazy_ai.LazyAI(
-                        file.filename, "{} solutions".format(file.filename),
-                        "Speech Language Pathology Exam Study Guide",
-                        "nelsontodd",
-                        name,
-                        title,
+                cd = clamd.ClamdNetworkSocket()
+                cd.__init__(host='localhost', port=3310, timeout=None)
+                scan_result = cd.instream(file)
+                if scan_result['stream'][0] == 'OK':
+                    file.seek(0)
+                    result = FileSchema().load(file)
+                    hwsolve = lazy_ai.LazyAI(
+                            file.filename, "{} solutions".format(file.filename),
+                            "Speech Language Pathology Exam Study Guide",
+                            "nelsontodd",
+                            name,
+                            title,
                         )
-                file.seek(0)
-                file.save(hwsolve.input_rel_path(file.filename))
-                solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
-                return send_file(solutions)
+                    file.seek(0)
+                    file.save(hwsolve.input_rel_path(file.filename))
+                    solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
+                    return send_file(solutions)
+                else:
+                    return jsonify(message='File has a virus.'), 400
             elif create_payment_response.is_error():
                 return jsonify(message='Payment error.'), 400
         else:
