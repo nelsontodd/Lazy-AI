@@ -314,3 +314,5 @@ def create_header_footer(canvas, doc, user_full_name):
     x = page_width - 4 * cm
     canvas.drawString(x, y, page_number_text)
 
+def convert_str_to_bool(s):
+    return eval('{}{}'.format(s[0].upper(), s[1:].lower()))

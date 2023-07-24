@@ -9,7 +9,7 @@ from reportlab.platypus import Spacer
 
 class LazyAI:
     def __init__(self, input_pdf, output_pdf, document_description, username,
-            user_full_name, document_title="", latex=True):
+            user_full_name, document_title="", latex=True, is_homework=True):
         self.document_description = document_description
         self.document_title = document_title
         self.username = username
@@ -21,6 +21,7 @@ class LazyAI:
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
         self.latex = latex
+        self.is_homework= is_homework
         self.model="gpt-4-0613"
 
     def output_rel_path(self, filename, extension=""):

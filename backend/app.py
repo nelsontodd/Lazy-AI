@@ -29,8 +29,8 @@ def create_solution():
     #Possibly: LLM Model selection
     try:
         file = request.files['file']
-        has_latex = request.form['hasLatex']
-        is_homework = request.form['isHomework']
+        has_latex = utils.convert_str_to_bool(request.form['hasLatex'])
+        is_homework = utils.convert_str_to_bool(request.form['isHomework'])
         name = request.form['name']
         token = request.form['sourceId']
         title = request.form['title']
@@ -57,7 +57,9 @@ def create_solution():
                             "Speech Language Pathology Exam Study Guide",
                             "nelsontodd",
                             name,
-                            title,
+                            document_title=title,
+                            latex=has_latex,
+                            is_homework=is_homework
                         )
                     file.seek(0)
                     file.save(hwsolve.input_rel_path(file.filename))
