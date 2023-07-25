@@ -67,8 +67,8 @@ def mathpix_pdf_to_mmd(filename, pdf_id=""):
         mathfile.write(final_converted_to_mmd.encode("utf8"))
     return final_converted_to_mmd
 
-def mathpix_img_to_txt(filename, img_id="", url="https://api.mathpix.com/v3/text"):
-    img_id = mathpix_post_local_file(filename, extension=".png", url=url)
+def mathpix_img_to_mmd(filename, img_id="", extension="", url="https://api.mathpix.com/v3/text"):
+    img_id = mathpix_post_local_file(filename, extension=extension, url=url)
    # url = "https://api.mathpix.com/v3/ocr-results" +img_id+ ".mmd"
    # conversion_response = requests.get(url, headers=headers)
    # while ('{"status":' in conversion_response.text):
@@ -202,17 +202,25 @@ def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
       raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
   See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
 
-def promptGPT_safe(messages, model="gpt-3.5-turbo-16k", function_call=None, functions=None):
+def promptGPT_safe(messages, model="gpt-3.5-turbo-16k", function_call=None,
+        functions=None, pl_tags=None):
     completion = 0
     i = 0
+    numtokens = 0
+    for message in messages:
+        numtokens = num_tokens_from_messages(message['content'])
+    timeout = 10 + (numtokens/1000.) * 30 #Guess
     while (completion == 0):
-        completion = promptGPT(messages, function_call=function_call, functions=functions)
+        completion = promptGPT_functions(messages, function_call=function_call,
+                functions=functions, timeout=timeout, pl_tags=pl_tags,)
         if i == 30: #Arbitrarily chosen
             raise Exception("OpenAI Timeout Error.")
+        if (completion == 0):
+            print("Call to openAI failed.")
         i+=1
     return completion
 
-def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, function_call=None):
+def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, function_call=None, pl_tags=None):
     """
     systemprompt: text
     userprompt: text
@@ -229,23 +237,33 @@ def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, f
     }
     function_call: {"name": "name of function from functions to call"}
     """
-    print("""Inputting {} tokens into {}.""".format(num_tokens_from_messages(systemprompt+userprompt), model))
-    if functions == None:
-        response = openai.ChatCompletion.create(
-          model=model,
-          messages=[
-            {"role": "system", "content": systemprompt},
-            {"role": "user", "content": userprompt}])
-        return response["choices"][0]["message"]["content"]
-    else:
-        response = openai.ChatCompletion.create(
-          model=model,
-          functions=functions,
-          function_call=function_call,
-          messages=[
-            {"role": "system", "content": systemprompt},
-            {"role": "user", "content": userprompt}])
-        return str(response["choices"][0]["message"]["function_call"])
+    with requests.Session() as session:
+        openai.requestssession = session
+        try:
+            print("""Inputting {} tokens into {}.""".format(num_tokens_from_messages(systemprompt+userprompt), model))
+            if functions == None:
+                response = openai.ChatCompletion.create(
+                  model=model,
+                  messages=[
+                    {"role": "system", "content": systemprompt},
+                    {"role": "user", "content": userprompt}])
+                openai.requestssession = None
+                return response["choices"][0]["message"]["content"]
+            else:
+                response = openai.ChatCompletion.create(
+                  model=model,
+                  functions=functions,
+                  function_call=function_call,
+                  messages=[
+                    {"role": "system", "content": systemprompt},
+                    {"role": "user", "content": userprompt}])
+                openai.requestssession = None
+                return str(response["choices"][0]["message"]["function_call"])
+        except Exception as e:
+            print('Server overloaded:', e)
+            openai.requestssession = None
+            time.sleep(5)  # sleep for 5 seconds
+            return 0
 
 def pdf_unordered_list(_dict, formatstyle=styles):
     _list = []

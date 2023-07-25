@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import clamd
 from flask import Flask, jsonify, request, send_file
@@ -52,17 +53,20 @@ def create_solution():
                 if scan_result['stream'][0] == 'OK':
                     file.seek(0)
                     result = FileSchema().load(file)
+                    print(f"Got file {file.filename}", file=sys.stderr)
+                    uuid = str(uuid4())
                     hwsolve = lazy_ai.LazyAI(
-                            file.filename, "{} solutions".format(file.filename),
-                            "Speech Language Pathology Exam Study Guide",
-                            "nelsontodd",
-                            name,
-                            document_title=title,
-                            latex=has_latex,
-                            is_homework=is_homework
-                        )
+                                file.filename,
+                                "{} solutions".format(file.filename),
+                                "", uuid, name,
+                                document_title=title,
+                                latex=has_latex,
+                                is_homework=is_homework
+                            )
                     file.seek(0)
                     file.save(hwsolve.input_rel_path(file.filename))
+                    cost = hwsolve.determine_cost() #Based on token count/OCR fees
+                    print(f"Cost for this file {file.filename} will be {cost}", file=sys.stderr)
                     solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
                     return send_file(solutions)
                 else:
