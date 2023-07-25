@@ -9,7 +9,7 @@ from reportlab.platypus import Spacer
 
 class LazyAI:
     def __init__(self, input_doc, output_pdf, document_description, username,
-            user_full_name, document_title=""):
+            user_full_name, document_title="", latex=True, is_homework=True):
         self.document_description = document_description
         self.document_title = document_title
         self.username = username
@@ -20,7 +20,8 @@ class LazyAI:
 
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
-        self.latex = True
+        self.latex = latex
+        self.is_homework= is_homework
         self.model="gpt-4-0613"
         self.solutions = None
 
@@ -42,15 +43,14 @@ class LazyAI:
                 image_mmd = utils.mathpix_imd_to_mmd(self.abs_path_input_doc, img_id=doc_id)
                 return image_mmd
         else:
-            text = utils.read_pdf(self.abs_path_input_doc)
-            return pdf_text
+            text = utils.read_pdf(self.abs_path_input_pdf)
+            return text
 
     def determine_prompt_from_description(self):
-        descrip_JSON = json.loads(utils.promptGPT(constants.PARSE_USER_DESCRIPTION_SYSTEM_PROMPT, self.document_description,function_call={"name":Route.openai_schema["name"]}, functions=[Route.openai_schema]))
-        descrip_JSON['arguments'] = json.loads(descrip_JSON['arguments'])
-        if descrip_JSON["arguments"]["LATEX"] == False:
-            self.Latex = False
-        return constants.prompts[descrip_JSON["arguments"]["TYPE"]]
+        if self.is_homework:
+            return constants.prompts["HOMEWORK"]
+        else:
+            return constants.prompts["STUDYGUIDE"]
 
     def build_pdf_page(self, _items, page_filename):
         doc = utils.default_pdf_doc(self.output_rel_path(page_filename,".pdf"),
@@ -97,12 +97,12 @@ class LazyAI:
         """
         cost = .3 #Guess
         if ".pdf" in self.input_doc:
-            with open(self.input_doc, 'rb') as fp:
+            with open(self.abs_path_input_doc, 'rb') as fp:
                 reader = PdfReader(fp)
                 num_pages = len(reader.pages)
             if self.latex == True: #Have to use OCR
                 cost += num_pages*.05
-            cost+=utils.num_tokens_from_messages(str(utils.read_pdf(self.input_doc)))*.00006
+            cost+=utils.num_tokens_from_messages(str(utils.read_pdf(self.abs_path_input_doc)))*.00006
             if cost > 3:
                 raise Exception("Pdf too large for context limit.")
         else:

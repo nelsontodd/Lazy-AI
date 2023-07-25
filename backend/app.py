@@ -2,16 +2,14 @@ import json
 import os
 import sys
 
-from bson.objectid import ObjectId
+import clamd
 from flask import Flask, jsonify, request, send_file
-from flask_cors import CORS, cross_origin
-from jwt import ExpiredSignatureError
+from flask_cors import CORS
 from marshmallow import ValidationError
-from pymongo import MongoClient
 from square.client import Client
 from uuid import uuid4
 
-from schemas import FileSchema, LoginSchema, UserSchema
+from schemas import FileSchema
 import utils
 import constants
 import lazy_ai
@@ -32,34 +30,47 @@ def create_solution():
     #Possibly: LLM Model selection
     try:
         file = request.files['file']
+        has_latex = utils.convert_str_to_bool(request.form['hasLatex'])
+        is_homework = utils.convert_str_to_bool(request.form['isHomework'])
+        name = request.form['name']
         token = request.form['sourceId']
+        title = request.form['title']
         if file is not None and token is not None:
-            print(f"Got file {file.filename}", file=sys.stderr)
-            hwsolve = lazy_ai.LazyAI(
-                    file.filename, "{} solutions".format(file.filename),
-                    "Speech Language Pathology Exam Study Guide",
-                    "nelsontodd",
-                    "Nelson Morrow",
-                    "Homework 4"
-                    )
-            cost = hwsolve.determine_cost() #Based on token count/OCR fees
-            print(f"Cost for this file {file.filename} will be {cost}", file=sys.stderr)
             create_payment_response = client.payments.create_payment(
                 body={
                     'source_id': token,
                     'idempotency_key': str(uuid4()),
                     'amount_money': {
-                        'amount': cost, # $1.00 charge
+                        'amount': 100, # $1.00 charge
                         'currency': 'USD',
                     },
                 }
             )
             if create_payment_response.is_success():
-                result = FileSchema().load(file)
-                file.seek(0)
-                file.save(hwsolve.input_rel_path(file.filename))
-                solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
-                return send_file(solutions)
+                cd = clamd.ClamdNetworkSocket()
+                cd.__init__(host='localhost', port=3310, timeout=None)
+                scan_result = cd.instream(file)
+                if scan_result['stream'][0] == 'OK':
+                    file.seek(0)
+                    result = FileSchema().load(file)
+                    print(f"Got file {file.filename}", file=sys.stderr)
+                    uuid = str(uuid4())
+                    hwsolve = lazy_ai.LazyAI(
+                                file.filename,
+                                "{} solutions".format(file.filename),
+                                "", uuid, name,
+                                document_title=title,
+                                latex=has_latex,
+                                is_homework=is_homework
+                            )
+                    file.seek(0)
+                    file.save(hwsolve.input_rel_path(file.filename))
+                    cost = hwsolve.determine_cost() #Based on token count/OCR fees
+                    print(f"Cost for this file {file.filename} will be {cost}", file=sys.stderr)
+                    solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
+                    return send_file(solutions)
+                else:
+                    return jsonify(message='File has a virus.'), 400
             elif create_payment_response.is_error():
                 return jsonify(message='Payment error.'), 400
         else:

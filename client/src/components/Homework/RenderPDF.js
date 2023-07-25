@@ -25,7 +25,7 @@ const RenderPDF = (props) => {
 
   if (file) {
     return (
-      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+      <Document file={file} onLoadSuccess={onDocumentLoadSuccess} className="w-100">
         {Array.from(new Array(numPages), (el, index) => (
           <Page
             style={{ width: '100%', height: 'auto'}}
