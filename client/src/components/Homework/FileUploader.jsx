@@ -10,7 +10,7 @@ import RenderPDF from './RenderPDF';
 const FileUploader = () => {
   const [file, setFile] = useState(null);
   const [hasLatex, setHasLatex] = useState(true);
-  const [isHomework, setIsHomework] = useState(true);
+  const [assignmentType, setAssignmentType] = useState("HOMEWORK");
   const [name, setName] = useState('');
   const [processingSolution, setProcessingSolution] = useState(false);
   const [title, setTitle] = useState('');
@@ -24,10 +24,6 @@ const FileUploader = () => {
     }
   }
 
-  const handleHomeworkRadioButton = (e) => {
-    setIsHomework(!isHomework);
-  }
-
   const handleLatexRadioButton = (e) => {
     setHasLatex(!hasLatex);
   }
@@ -39,7 +35,7 @@ const FileUploader = () => {
         formData.append('file', file);
         formData.append('fileName', file.name);
         formData.append('hasLatex', hasLatex);
-        formData.append('isHomework', isHomework);
+        formData.append('assignmentType', assignmentType);
         formData.append('name', name);
         formData.append('sourceId', token.token);
         formData.append('title', title);
@@ -133,23 +129,31 @@ const FileUploader = () => {
           </Col>
           <Col xs={6}>
             <p className="mt-3">
-              <b>Is this a homework assignment or a study guide?</b>
+              <b>What type of assignment is this?</b>
             </p>
             <Form.Check
-              value={true}
+              value={"HOMEWORK"}
               type="radio"
               aria-label="radio 1"
               label="Homework Assignment"
-              onChange={handleHomeworkRadioButton}
-              checked={isHomework === true}
+              onChange={(e) => setAssignmentType(e.target.value)}
+              checked={assignmentType === "HOMEWORK"}
             />
             <Form.Check
-              value={false}
+              value={"STUDYGUIDE"}
               type="radio"
               aria-label="radio 2"
               label="Study Guide"
-              onChange={handleHomeworkRadioButton}
-              checked={isHomework === false}
+              onChange={(e) => setAssignmentType(e.target.value)}
+              checked={assignmentType === "STUDYGUIDE"}
+            />
+            <Form.Check
+              value={"EXAM"}
+              type="radio"
+              aria-label="radio 3"
+              label="Exam"
+              onChange={(e) => setAssignmentType(e.target.value)}
+              checked={assignmentType === "EXAM"}
             />
             <h6 className="mt-3">Get solutions for $1</h6>
             <PaymentForm

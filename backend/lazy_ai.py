@@ -9,7 +9,7 @@ from reportlab.platypus import Spacer
 
 class LazyAI:
     def __init__(self, input_doc, output_pdf, document_description, username,
-            user_full_name, document_title="", latex=True, is_homework=True):
+            user_full_name, document_title="", latex=True, assignment_type="HOMEWORK"):
         self.document_description = document_description
         self.document_title = document_title
         self.username = username
@@ -21,7 +21,7 @@ class LazyAI:
         self.output_pdf = output_pdf
         self.abs_path_output_pdf = self.output_rel_path(output_pdf)
         self.latex = latex
-        self.is_homework= is_homework
+        self.assignment_type= assignment_type
         self.model="gpt-4-0613"
         self.solutions = None
 
@@ -47,7 +47,7 @@ class LazyAI:
             return text
 
     def determine_prompt_from_description(self):
-        if self.is_homework:
+        if self.assignment_type == "HOMEWORK" and self.assignment_type == "EXAM":
             return constants.prompts["HOMEWORK"]
         else:
             return constants.prompts["STUDYGUIDE"]
