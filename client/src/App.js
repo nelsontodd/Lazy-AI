@@ -7,7 +7,8 @@ import Homework from './components/Homework';
 import Landing from './components/Landing';
 
 
-axios.defaults.baseURL = 'http://127.0.0.1:5000';
+axios.defaults.baseURL = 'https://homeworkhero.io';
+axios.defaults.withCredentials = true;
 
 function App() {
   return (
