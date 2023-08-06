@@ -7,9 +7,9 @@ dev:
 	flask run --reload
 
 pull-clamav:
-	docker pull clamav/clamav
+	sudo docker pull clamav/clamav
 
 run-clamav:
-	docker run -p 3310:3310 clamav/clamav
+	sudo docker run -d -p 3310:3310 clamav/clamav
 
 first-time-clamav: pull-clamav run-clamav

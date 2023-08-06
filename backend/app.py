@@ -16,13 +16,12 @@ import lazy_ai
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/homework": {"origins": ["https://homeworkhero.io", "http://homeworkhero.io"]}})
 
 client = Client(
     access_token=os.environ['SQUARE_ACCESS_TOKEN'],
     environment='sandbox'
 )
-
 
 @app.route('/homework', methods=['POST'])
 def create_solution():

@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import './App.scss';
 
-axios.defaults.baseURL = 'http://127.0.0.1:5000';
+axios.defaults.baseURL = 'https://homeworkhero.io';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
