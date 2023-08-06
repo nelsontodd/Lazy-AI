@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
+import FAQ from './components/FAQ';
 import Homework from './components/Homework';
 import Landing from './components/Landing';
 
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/homework" element={<Homework />} />
+          <Route path="/faq" element={<FAQ />} />
         </Routes>
       </Router>
     </div>
