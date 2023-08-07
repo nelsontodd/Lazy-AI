@@ -9,15 +9,18 @@ const FAQ = () => {
       <h2 className="mb-5">Frequently asked questions.</h2>
       <h3>How does it work?</h3>
       <p>You upload a file with your assignment, pay us $1, wait a couple
-        minutes, and then you get your formatted homework answers. We use AI
+        minutes, and then you get your formatted homework answers. We use LLMs
         under the hood to understand your assignment and generate reasonable
-        answer for these problems.</p>
+        answers for these problems.</p>
 
-      <h3 className="mt-3">How much it cost?</h3>
-      <p>It costs $1 regardless of homework assignment.</p>
+      <h3 className="mt-3">What file types are supported?</h3>
+      <p>PDF, JPG, and PNG.</p>
+
+      <h3 className="mt-3">How much does it cost?</h3>
+      <p>Solutions costs $1, regardless of your assignment.</p>
 
       <h3 className="mt-3">What subjects can I use this for?</h3>
-      <p>All subjects. HomeworkHero uses AI underneath the hood, so it will be able to
+      <p>All subjects. HomeworkHero uses LLMs underneath the hood, so it will be able to
         assist you an any assignment that you have.</p>
 
       <h3 className="mt-3">Can I use this for exams?</h3>
@@ -42,9 +45,6 @@ const FAQ = () => {
       <h3 className="mt-3">How long is the wait?</h3>
       <p>Less than 5 minutes. HomeworkHero usually takes about a couple of
         minutes to understand your assignments and create answers..</p>
-
-      <h3 className="mt-3">What file types are supported?</h3>
-      <p>PDF, JPG, and PNG.</p>
 
     </Container>
   );

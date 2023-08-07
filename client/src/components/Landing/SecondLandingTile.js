@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
+import { Container, Row, Col } from 'react-bootstrap';
+
 
 
 const SecondLandingTile = () => {
@@ -13,13 +14,14 @@ const SecondLandingTile = () => {
         <h3 className="pt-3 text-muted">
           Finish assignments with ease: whatever and whenever.
         </h3>
-        <Button
-          href="/homework"
-          className="mt-3 text-white"
-          variant="secondary"
-        >
-          Get Solutions
-        </Button>
+        <Row>
+            <Col md={6}>
+            <img src="/test_input.png" alt="Example Input" className="img-fluid" style={{height:'400px', width: 'auto'}}/>
+            </Col>
+            <Col md={6}>
+            <img src="/test_output.png" alt="Example Output" className="img-fluid" style={{height:'400px', width: 'auto'}}/>
+            </Col>
+        </Row>
       </Container>
     </div>
   )
