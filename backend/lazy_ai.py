@@ -47,7 +47,7 @@ class LazyAI:
             return text
 
     def determine_prompt_from_description(self):
-        if self.assignment_type == "HOMEWORK" and self.assignment_type == "EXAM":
+        if self.assignment_type == "HOMEWORK" or self.assignment_type == "EXAM":
             return constants.prompts["HOMEWORK"]
         else:
             return constants.prompts["STUDYGUIDE"]
@@ -60,8 +60,11 @@ class LazyAI:
 
     def write_answers_to_pdf(self, text):
         answers_pdf = "{}_answers".format(self.input_doc)
-        solutions = utils.promptGPT(self.determine_prompt_from_description(),
-                text, self.model)
+        print(f"About to call openai for solutions for {answers_pdf}")
+        solutions = utils.promptGPT([{'role':'system',
+            'content':self.determine_prompt_from_description()},
+            {'role':'user', 'content':text}], self.model)
+        print(f"solutions: {solutions}")
         self.solutions = solutions
         utils.to_md(solutions, self.output_rel_path(answers_pdf))
         utils.pandoc_pdf(self.output_rel_path(answers_pdf),
@@ -81,8 +84,11 @@ class LazyAI:
 
     def solutions_pdf(self) -> str:
         _items = [utils.pdf_title(self.document_title), Spacer(1, 24)]
+        print(f"_items: {_items}")
         titlepagename = self.build_pdf_page(_items, "{}_titlepage".format(self.input_doc))
+        print(f"Titlepagename: {titlepagename}")
         answersfilename = self.write_answers_to_pdf(self.extract_text_from_pdf())
+        print(f"Answers file name: {answersfilename}")
         self.merge(titlepagename, answersfilename)
         return self.abs_path_output_pdf
 
@@ -102,7 +108,7 @@ class LazyAI:
                 num_pages = len(reader.pages)
             if self.latex == True: #Have to use OCR
                 cost += num_pages*.05
-            cost+=utils.num_tokens_from_messages(str(utils.read_pdf(self.abs_path_input_doc)))*.00006
+            cost+=utils.num_tokens_from_messages([{'role':'system','content':str(utils.read_pdf(self.abs_path_input_doc))}])*.00006
             if cost > 3:
                 raise Exception("Pdf too large for context limit.")
         else:

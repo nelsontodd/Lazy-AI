@@ -1,5 +1,7 @@
 import os
-import openai
+import promptlayer
+promptlayer.api_key = "pl_68f5e2937994a1784404eaae2421a0b1"
+openai = promptlayer.openai
 openai.api_key = os.getenv("OPENAI_API_KEY")
 model = os.getenv("OPENAI_MODEL")
 username=os.getenv("OPENAI_USER")
@@ -64,13 +66,15 @@ STUDYGUIDE = """Here is a blank study guide I made. I am a teacher and I want to
 abilities. Identify all the questions/points in this study guide and provide a solution or
 study help for each. Ignore anything that tells you to draw something. Output your
 response in this format.: "1. INSERT_QUESTION_OR_TOPIC: INSERT_ANSWER_OR_DETAILS  "
-Number your identified questions/topics and answers. Provide Answers for ALL. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
+Number your identified questions/topics and answers. Provide Answers for ALL. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters.Follow ALL the rules of LATEX. Outputting in properly formatted LATEX is very important.{} :""".format(MARKDOWN_INSTRUCTIONS)
 
 HOMEWORK = """Here is a homework assignment. I am a teacher and I want to test your
 abilities. Identify and provide a solution to all of the problems contained inside of it.
 Ignore any question that tells you to draw something. rewrite identified questions to be
 in full sentences. Output your questions and answers in this format: "1.
-IDENTIFIED_QUESTION  \n- ANSWER  " Number your questions and answers. Answer ALL questions. If mathematical equations are involved, output with PROPER LATEX and no Unicode characters. {} :""".format(MARKDOWN_INSTRUCTIONS)
+IDENTIFIED_QUESTION  \n- ANSWER  " Number your questions and answers. Answer ALL
+questions. If mathematical equations are involved, output with PROPER LATEX and no Unicode
+characters. Follow ALL the rules of LATEX. Outputting in properly formatted LATEX is very important. {} :""".format(MARKDOWN_INSTRUCTIONS)
 
 PARSE_USER_DESCRIPTION_SYSTEM_PROMPT = """
 You are the router for lazyai, a natural language homework solutions manual. Determine,

@@ -16,7 +16,7 @@ import lazy_ai
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/homework": {"origins": ["https://homeworkhero.io", "http://homeworkhero.io"]}})
+CORS(app, resources={r"/homework": {"origins": ["https://homeworkhero.io"]}})
 
 client = Client(
     access_token=os.environ['SQUARE_ACCESS_TOKEN'],
@@ -67,6 +67,7 @@ def create_solution():
                     cost = hwsolve.determine_cost() #Based on token count/OCR fees
                     print(f"Cost for this file {file.filename} will be {cost}", file=sys.stderr)
                     solutions = '{}.pdf'.format(hwsolve.solutions_pdf())
+                    print(f"Retrieved solutions.", file=sys.stderr)
                     return send_file(solutions)
                 else:
                     return jsonify(message='File has a virus.'), 400
@@ -80,4 +81,4 @@ def create_solution():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(threaded=True, debug=True)

@@ -1,9 +1,11 @@
 import os
+import subprocess
 import time
 import json
+import sys
 import requests
 import csv
-import openai
+import promptlayer
 import constants
 import tiktoken
 import pypdf
@@ -21,6 +23,7 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Frame, PageTemplate
 from functools import partial
+openai = promptlayer.openai
 
 
 #PDF Style Sheet
@@ -59,12 +62,19 @@ def mathpix_pdf_to_mmd(filename, pdf_id=""):
         pdf_id = mathpix_post_local_file(filename)['pdf_id']
     url = "https://api.mathpix.com/v3/pdf/" +pdf_id+ ".mmd"
     conversion_response = requests.get(url, headers=headers)
+    i = 0
     while ('{"status":' in conversion_response.text):
         time.sleep(2)
+        print()
+        print()
+        print(f"Mathpix ocr conversion response: {conversion_response.text}")
         conversion_response = requests.get(url, headers=headers)
+    print(f"Mathpix ocr conversion response post 1: {conversion_response.text}")
     final_converted_to_mmd = conversion_response.text
+    print(f"Mathpix ocr conversion response 2: {conversion_response.text}")
     with open(filename+".mmd","wb") as mathfile:
         mathfile.write(final_converted_to_mmd.encode("utf8"))
+    print(f"Done with mathpix ocr at {final_converted_to_mmd}")
     return final_converted_to_mmd
 
 def mathpix_img_to_mmd(filename, img_id="", extension="", url="https://api.mathpix.com/v3/text"):
@@ -82,31 +92,55 @@ def mathpix_img_to_mmd(filename, img_id="", extension="", url="https://api.mathp
 
 
 def pandoc_pdf(_input, _output="", depth=1):
-    print("running pandoc")
-    def pandoc_error_handle(errormsg, depth=1):
-        print("ERROR: Error with PDF format. Reformatting and trying again.")
-        with open(_input, "r") as f:
+    print(f"running pandoc on {_input}", file=sys.stderr)
+    def pandoc_error_handle(errormsg, _depth):
+        print("ERROR: Error with PDF format. Reformatting and trying again.", file=sys.stderr)
+        with open("{}.md".format(_input), "r") as f:
             mmd = f.read()
-        fixed = promptGPT("""Fix this markdown to ensure it can be converted to pdf by xelatex.
-        The Error message is: {}, the document is below.""".format(errormsg), mmd,
-        model="gpt-3.5-turbo")
-        with open(_input, "w") as f:
+        fixed = promptGPT([{'role':'system','content':"""The user is getting an error
+        converting a markdown Document (his homework) to pdf because it contains LATEX that is improperly formatted. Pandoc gave an error message when trying to parse this LATEX:
+        ```
+        {}
+        ```
+        ========================
+        Your job is to delete the part
+        of the document that is giving the LATEX error. To do this: First, find the
+        question block that this error occurs on. Second, remove the WHOLE question and answer block, starting at the number of the question!  Replace this whole errored question andanswer with the words 'LATEX Error. Sorry!' Then, respond with the ENTIRE original LATEX document but with this specific question block changed. This way, the document will successfully be able to be converted to a pdf later.
+
+        RULE: ONLY MODIFY THE QUESTION (ONLY ONE QUESTION) AND ANSWER THAT PERTAIN TO THE ERROR GIVEN BY PANDOC
+        RULE: Respond with NOTHING BUT THE FIXED LATEX DOCUMENT
+
+        ==========================
+        EXAMPLE:
+            OFFENDING QUESTION WITH ERROR:
+            17. The derivative of $x/5$ is ... (Arbitrary question that contains latex that
+            may be broken):
+            (arbitrary answer that also contains latex that may be broken)
+
+            LLM FIXES THIS QUESTION BY WRITING:
+            17.LATEX Error. Sorry.
+        ==========================
+        """.format(errormsg)},
+        {'role':'user','content':mmd}], model="gpt-3.5-turbo-16k")
+        with open("{}.md".format(_input), "w") as f:
             f.write(fixed)
-        if depth < 3:
-            pandoc_pdf(_input, _output, depth+1)
+        if _depth < 3:
+            pandoc_pdf(_input, _output, _depth+1)
         else:
+            print("PDF convert failed. Try again.")
             return "PDF convert failed. Try again."
 
     if _output=="":
         command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _input)
-        output = os.system(command)
-        if 'Error' in str(output):
-            pandoc_error_handle(output, depth)
     else:
         command = "pandoc --pdf-engine=xelatex -s {}.md -o {}.pdf".format(_input, _output)
-        output = os.system(command)
-        if 'Error' in str(output):
-            pandoc_error_handle(output, depth)
+    output = subprocess.run(command.split(), capture_output=True, text=True)
+    print(f"Output of pandoc run: {output}")
+    print(f"stderr of pandoc run: {output.stderr}")
+    print()
+    if str(output.stderr) != '':
+        print("running pandoc fix", file=sys.stderr)
+        pandoc_error_handle(output.stderr, depth)
 
 def to_md(buffer, title):
     if type(buffer) == str:
@@ -181,9 +215,8 @@ def transcribe_audio(audiofile):
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
     return transcript
 
-def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
+def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
   """Returns the number of tokens used by a list of messages."""
-  messages = [{"role":"user", "content":prompttext}]
   try:
       encoding = tiktoken.encoding_for_model(model)
   except KeyError:
@@ -202,17 +235,15 @@ def num_tokens_from_messages(prompttext, model="gpt-3.5-turbo-0301"):
       raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
   See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
 
-def promptGPT_safe(messages, model="gpt-3.5-turbo-16k", function_call=None,
+def promptGPT(messages, model=constants.model, function_call=None,
         functions=None, pl_tags=None):
     completion = 0
     i = 0
-    numtokens = 0
-    for message in messages:
-        numtokens = num_tokens_from_messages(message['content'])
-    timeout = 10 + (numtokens/1000.) * 30 #Guess
+    numtokens = num_tokens_from_messages(messages)
+    timeout = 60 + (numtokens/1000.) * 150 #Guess
     while (completion == 0):
         completion = promptGPT_functions(messages, function_call=function_call,
-                functions=functions, timeout=timeout, pl_tags=pl_tags,)
+                functions=functions, timeout=timeout, model=model, pl_tags=pl_tags,)
         if i == 30: #Arbitrarily chosen
             raise Exception("OpenAI Timeout Error.")
         if (completion == 0):
@@ -220,7 +251,8 @@ def promptGPT_safe(messages, model="gpt-3.5-turbo-16k", function_call=None,
         i+=1
     return completion
 
-def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, function_call=None, pl_tags=None):
+def promptGPT_functions(messages, model=constants.model, functions=None,
+        function_call=None, timeout=30, pl_tags=None):
     """
     systemprompt: text
     userprompt: text
@@ -240,13 +272,15 @@ def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, f
     with requests.Session() as session:
         openai.requestssession = session
         try:
-            print("""Inputting {} tokens into {}.""".format(num_tokens_from_messages(systemprompt+userprompt), model))
+            print("""Inputting {} tokens into
+                    {}.""".format(num_tokens_from_messages(messages), model))
             if functions == None:
                 response = openai.ChatCompletion.create(
                   model=model,
-                  messages=[
-                    {"role": "system", "content": systemprompt},
-                    {"role": "user", "content": userprompt}])
+                  messages=messages,
+                  request_timeout=timeout,
+                  temperature=0.1
+                  )
                 openai.requestssession = None
                 return response["choices"][0]["message"]["content"]
             else:
@@ -254,9 +288,9 @@ def promptGPT(systemprompt, userprompt, model=constants.model, functions=None, f
                   model=model,
                   functions=functions,
                   function_call=function_call,
-                  messages=[
-                    {"role": "system", "content": systemprompt},
-                    {"role": "user", "content": userprompt}])
+                  request_timeout=timeout,
+                  temperature=0.1,
+                  messages=messages)
                 openai.requestssession = None
                 return str(response["choices"][0]["message"]["function_call"])
         except Exception as e:
