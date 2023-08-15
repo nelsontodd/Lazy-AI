@@ -2,10 +2,12 @@ import React from 'react';
 
 import Container from 'react-bootstrap/Container';
 
+import Examples from './Examples';
+
 const FAQ = () => {
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-5 mb-5">
       <h2 className="mb-5">Frequently asked questions.</h2>
       <h3>How does it work?</h3>
       <p>You upload a file with your assignment, pay us $1, wait a couple
@@ -41,6 +43,7 @@ const FAQ = () => {
 
       <h3 className="mt-3">What do the outputs look like?</h3>
       <p>The answers document looks like the following images:</p>
+      <Examples />
 
       <h3 className="mt-3">How long is the wait?</h3>
       <p>Less than 5 minutes. HomeworkHero usually takes about a couple of

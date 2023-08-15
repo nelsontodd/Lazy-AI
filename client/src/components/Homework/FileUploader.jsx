@@ -12,6 +12,7 @@ const FileUploader = () => {
   const [hasLatex, setHasLatex] = useState(true);
   const [assignmentType, setAssignmentType] = useState("HOMEWORK");
   const [name, setName] = useState('');
+  const [email, setEmail] = useState(null);
   const [processingSolution, setProcessingSolution] = useState(false);
   const [title, setTitle] = useState('');
 
@@ -29,7 +30,10 @@ const FileUploader = () => {
   }
 
   const onSubmit = async (token, verifiedBuyer) => {
-    if (file) {
+    console.log('Email: ' + email);
+    console.log('Email: ' + JSON.stringify(email));
+    if (file && email) {
+      console.log(1);
       const formData = new FormData();
       try {
         formData.append('file', file);
@@ -37,16 +41,20 @@ const FileUploader = () => {
         formData.append('hasLatex', hasLatex);
         formData.append('assignmentType', assignmentType);
         formData.append('name', name);
+        formData.append('email', email);
         formData.append('sourceId', token.token);
         formData.append('title', title);
         setProcessingSolution(true);
+        console.log(2);
         const headers = {
           responseType: 'blob',
           headers: {
             'content-type': 'multipart/form-data',
           },
         };
+        console.log(3);
         const res = await axios.post('/homework', formData, headers);
+        console.log(4);
         const blob = new Blob([res.data], { type: 'application/pdf' });
         saveAs(blob, 'solutions.pdf');
       } catch (err) {
@@ -83,6 +91,17 @@ const FileUploader = () => {
                 />
                 <p>Select a file smaller than 5MB before uploading</p>
                 <p className="mt-3">
+                  <b>Email Address</b>
+                </p>
+                <Form.Control
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder="Your Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <p className="mt-3">
                   <b>What name do you want on the solutions? (Optional)</b>
                 </p>
                 <Form.Control
@@ -104,30 +123,30 @@ const FileUploader = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   required
                 />
-                <p className="mt-3">
-                  <b>Does your assignment have equations? (Example: Latex, physics,
-                    chemistry, etc)</b>
-                </p>
-                <Form.Check
-                  value={true}
-                  type="radio"
-                  aria-label="radio 1"
-                  label="Yes"
-                  onChange={handleLatexRadioButton}
-                  checked={hasLatex === true}
-                />
-                <Form.Check
-                  value={false}
-                  type="radio"
-                  aria-label="radio 2"
-                  label="No"
-                  onChange={handleLatexRadioButton}
-                  checked={hasLatex === false}
-                />
               </div>
             </div>
           </Col>
           <Col xs={6}>
+            <p className="mt-3">
+              <b>Does your assignment have equations? (Example: Latex, physics,
+                chemistry, etc)</b>
+            </p>
+            <Form.Check
+              value={true}
+              type="radio"
+              aria-label="radio 1"
+              label="Yes"
+              onChange={handleLatexRadioButton}
+              checked={hasLatex === true}
+            />
+            <Form.Check
+              value={false}
+              type="radio"
+              aria-label="radio 2"
+              label="No"
+              onChange={handleLatexRadioButton}
+              checked={hasLatex === false}
+            />
             <p className="mt-3">
               <b>What type of assignment is this?</b>
             </p>

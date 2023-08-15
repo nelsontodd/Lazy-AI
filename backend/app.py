@@ -25,15 +25,18 @@ client = Client(
 
 @app.route('/homework', methods=['POST'])
 def create_solution():
+    print('create_solution')
     #TODO: Get username, prompt for user full name, assignment description, title (optional)
     #Possibly: LLM Model selection
     try:
         file = request.files['file']
         has_latex = utils.convert_str_to_bool(request.form['hasLatex'])
         assignment_type = request.form['assignmentType'].upper()
+        email = request.form['email']
         name = request.form['name']
         token = request.form['sourceId']
         title = request.form['title']
+        print('Email: {}'.format(email))
         if file is not None and token is not None:
             create_payment_response = client.payments.create_payment(
                 body={

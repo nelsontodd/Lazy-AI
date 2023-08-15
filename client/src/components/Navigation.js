@@ -1,20 +1,26 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-import logo from '../../logoipsum-298.svg';
+import logo from '../logoipsum-298.svg';
 
 
 const Navigation = () => {
   return (
     <Navbar expand="md">
       <Container>
-        <Navbar.Brand><img src={logo} alt="Logo"/></Navbar.Brand>
+        <Navbar.Brand style={{fontSize:'2rem'}}>
+          <img src={logo} alt="Logo"/>
+          &nbsp;
+          HomeworkHero
+        </Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
-          <Button href="/FAQ" className="text-white" variant="secondary">
-            <b>FAQ</b>
-          </Button>
+          <Nav.Link href="/faq">FAQ</Nav.Link>
+          &nbsp;
+          &nbsp;
+          &nbsp;
           <Button href="/homework" className="text-white">
             <b>Get Solutions</b>
           </Button>
