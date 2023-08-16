@@ -25,7 +25,6 @@ client = Client(
 
 @app.route('/homework', methods=['POST'])
 def create_solution():
-    print('create_solution')
     #TODO: Get username, prompt for user full name, assignment description, title (optional)
     #Possibly: LLM Model selection
     try:
