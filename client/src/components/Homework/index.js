@@ -6,11 +6,9 @@ import FileUploader from './FileUploader';
 const Homework = () => {
 
   return (
-    <>
-      <Container className="mt-5">
-        <FileUploader />
-      </Container>
-    </>
+    <Container className="mt-5">
+      <FileUploader />
+    </Container>
   );
 }
 
