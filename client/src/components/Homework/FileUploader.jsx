@@ -85,7 +85,7 @@ const FileUploader = () => {
               <div>
                 <Form.Control
                   type="file"
-                  accept=".pdf"
+                  accept=".pdf, .jpg, .png, .jpeg"
                   id="fileUploader"
                   onChange={(e) => onFileChange(e)}
                 />
