@@ -30,10 +30,7 @@ const FileUploader = () => {
   }
 
   const onSubmit = async (token, verifiedBuyer) => {
-    console.log('Email: ' + email);
-    console.log('Email: ' + JSON.stringify(email));
     if (file && email) {
-      console.log(1);
       const formData = new FormData();
       try {
         formData.append('file', file);
@@ -45,16 +42,13 @@ const FileUploader = () => {
         formData.append('sourceId', token.token);
         formData.append('title', title);
         setProcessingSolution(true);
-        console.log(2);
         const headers = {
           responseType: 'blob',
           headers: {
             'content-type': 'multipart/form-data',
           },
         };
-        console.log(3);
         const res = await axios.post('/homework', formData, headers);
-        console.log(4);
         const blob = new Blob([res.data], { type: 'application/pdf' });
         saveAs(blob, 'solutions.pdf');
       } catch (err) {
