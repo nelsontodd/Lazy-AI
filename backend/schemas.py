@@ -16,8 +16,13 @@ class UserSchema(Schema):
 
 class FileSchema:
 
+    def __init__(self):
+        self.accepted_content_types = [
+            'application/pdf', 'image/jpeg', 'image/png'
+        ]
+
     def load(self, file):
-        if file.content_type != 'application/pdf':
+        if file.content_type not in self.accepted_content_types:
             raise ValidationError('Document must be a pdf.')
         if file.seek(0, os.SEEK_END) > 5242880:
             raise ValidationError('Maximum document file size 5MB.')

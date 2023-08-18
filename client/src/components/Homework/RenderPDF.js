@@ -23,7 +23,12 @@ const RenderPDF = (props) => {
     setNumPages(numPages);
   }
 
-  if (file) {
+  const isPDF = (f) => {
+    let parts = f.name.split('.');
+    return (parts[parts.length - 1] === 'pdf');
+  }
+
+  if (file && isPDF(file)) {
     return (
       <Document file={file} onLoadSuccess={onDocumentLoadSuccess} className="w-100">
         {Array.from(new Array(numPages), (el, index) => (
