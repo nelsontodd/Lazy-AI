@@ -42,7 +42,7 @@ const FAQ = () => {
         help you with formatting.</p>
 
       <h3 className="mt-3">What do the outputs look like?</h3>
-      <p>The answers document looks like the following images:</p>
+      <p>On the left is a randomly chosen page from an old calculus textbook. On the right are solutions we would generate to some of the problems on that page. Open each image in a new tab to get a better idea.</p>
       <Examples />
 
       <h3 className="mt-3">How long is the wait?</h3>
