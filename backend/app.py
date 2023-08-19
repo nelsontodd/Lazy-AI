@@ -29,6 +29,8 @@ def create_solution():
     #Possibly: LLM Model selection
     try:
         file = request.files['file']
+        extension = file.filename.split('.')[-1]
+        file.filename = "homework."+extension
         has_latex = utils.convert_str_to_bool(request.form['hasLatex'])
         assignment_type = request.form['assignmentType'].upper()
         email = request.form['email']
@@ -54,7 +56,6 @@ def create_solution():
                 if scan_result['stream'][0] == 'OK':
                     file.seek(0)
                     result = FileSchema().load(file)
-                    print(f"Got file {file.filename}", file=sys.stderr)
                     uuid = str(uuid4())
                     hwsolve = lazy_ai.LazyAI(
                                 file.filename,
@@ -62,7 +63,8 @@ def create_solution():
                                 "", uuid, name,
                                 document_title=title,
                                 latex=has_latex,
-                                assignment_type=assignment_type
+                                assignment_type=assignment_type,
+                                extension=extension
                             )
                     file.seek(0)
                     file.save(hwsolve.input_rel_path(file.filename))

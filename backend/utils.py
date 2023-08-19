@@ -87,9 +87,14 @@ def mathpix_img_to_mmd(filename, img_id="", extension="", url="https://api.mathp
    # final_converted_to_mmd = conversion_response.text
     print(img_id)
     with open(filename+".mmd","wb") as mathfile:
-        mathfile.write(img_id.text)
-    return img_id
+        mathfile.write(img_id['text'].encode("utf8"))
+    return img_id['text']
 
+def pdflatex(_input, output_path=""):
+    command = "pdflatex -output-directory={} {}.md".format(output_path, _input)
+    output = subprocess.run(command.split(), capture_output=True, text=True)
+    print(f"Output of pdflatex: {output}")
+    return 0
 
 def pandoc_pdf(_input, _output="", depth=1):
     print(f"running pandoc on {_input}", file=sys.stderr)
@@ -204,10 +209,11 @@ def read_pdf(filename):
     with open(filename, 'rb') as fp:
         reader = pypdf.PdfReader(fp)
         num_pages = len(reader.pages)
-        txt = []
+        txt = ''
         for page_num in range(num_pages):
             page = reader.pages[page_num]
-            txt.append(page.extract_text())
+            txt += page.extract_text()
+            txt += '\n'
     return txt
 
 def transcribe_audio(audiofile):
@@ -226,6 +232,7 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
       for message in messages:
           num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
           for key, value in message.items():
+              print(value)
               num_tokens += len(encoding.encode(value))
               if key == "name":  # if there's a name, the role is omitted
                   num_tokens += -1  # role is always required and always 1 token

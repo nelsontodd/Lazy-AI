@@ -122,8 +122,7 @@ const FileUploader = () => {
           </Col>
           <Col xs={6}>
             <p className="mt-3">
-              <b>Does your assignment have equations? (Example: Latex, physics,
-                chemistry, etc)</b>
+              <b>Does your assignment have LATEX (eg Mathematical) equations? (Example: Calculus, physics,chemistry, algebra, etc)</b>
             </p>
             <Form.Check
               value={true}
