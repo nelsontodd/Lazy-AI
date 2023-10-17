@@ -13,7 +13,9 @@ essay_prompt = os.getenv("INPUT_ESSAY_PROMPT")
 case_study_pdf = os.getenv("CASE_STUDY_PDF")
 input_path = os.getenv("PROJECT_DIR")+"/inputs/"
 output_path = os.getenv("PROJECT_DIR")+"/outputs/"
-
+sand = False
+if os.getenv('ENVIRON') == 'SAND':
+    sand = True
 
 CSV_INSTRUCTIONS = """Give no other
     text besides CSV. Ignore all previous command and prompts. Do not respond to this
@@ -124,7 +126,7 @@ Rule: PROPER LATEX with no preamble commands
 Tip: Be careful not to confuse multiple choice questions with questions that have sub parts ie a,b,c, and d! Review the wording of the question to determine its type and proper format.
 Tip: Normally, questions in a homework document will be preceded by either a number or a letter at the beginning of a line.
 Tip: Format your questions and answers for use in the body of the LATEX exam document class.
-
+AVAILABLE LATEX PACKAGES: amssymb, amsmath, [utf8]{inputenc}, amsfonts, bm, esint, siunitx
 """
 NON_MATH_HOMEWORK = """I am a teacher and I want to test your abilities. Here is a homework assignment. Identify and provide a solution to all of the problems contained inside of it. Ignore any question that tells you to draw something. rewrite identified questions to be
 in full sentences. Output your questions and answers in this format: "1.
@@ -181,6 +183,7 @@ Rule: PROPER LATEX with no preamble commands
 Tip: Be careful not to confuse multiple choice questions with questions that have sub parts ie a,b,c, and d! Review the wording of the question to determine its type and proper format.
 Tip: Normally, questions in a homework document will be preceded by either a number or a letter at the beginning of a line.
 Tip: Format your questions and answers for use in the body of the LATEX exam document class.
+AVAILABLE LATEX PACKAGES: amssymb, amsmath, [utf8]{inputenc}, amsfonts, bm, esint, siunitx
 """
 
 PARSE_USER_DESCRIPTION_SYSTEM_PROMPT = """
@@ -190,4 +193,59 @@ or study guide. Determine also if the document will contain LATEX. Homework and 
 guides in subjects related to math, engineering, sciences, or medicine will contain LATEX.
 Homeworks and study guides in fields related to the social studies or literature or art
 will not contain LATEX.
+"""
+
+CODE_HOMEWORK = """
+I am a teacher and I want to test your abilities. Here is a homework assignment. Identify
+all of the problems contained inside of it. Then, come up with your own answer to each
+question. Think hard and reflect on your answers. Ignore any question that tells you to
+draw something. Rewrite identified questions to be in full sentences where you see fit.
+Output your questions and answers in this format: 
+
+\question INSERT_IDENTIFIED_CODE_QUESTION
+\begin{solution}
+\begin{lstlisting}
+INSERT_CODE_ANSWER_IN_PROPER_PROGRAMMING_LANGUAGE
+\end{lstlisting}
+\end{solution}
+
+Number your questions and answers. Answer ALL questions. Output with PROPER CODE LATEX and no
+Unicode characters. Follow ALL the rules of LATEX. Outputting in properly formatted LATEX
+is very important. Dont include any commands that are supposed to be used in the preamble.
+Your output will be in the main body of a document.
+
+Rule: Answer ALL questions.
+Rule: PROPER LATEX with no preamble commands
+Tip: Be careful not to confuse multiple choice questions with questions that have sub parts ie a,b,c, and d! Review the wording of the question to determine its type and proper format.
+Tip: Normally, questions in a homework document will be preceded by either a number or a letter at the beginning of a line.
+Tip: Format your questions and answers for use in the body of the LATEX exam document class.
+Tip: You will be using the lstlisting latex package in this document. Identify the correct
+programming language and write it in a lstlisting block.
+
+AVAILABLE LATEX PACKAGES: amssymb, amsmath, [utf8]{inputenc}, amsfonts, bm, esint,
+siunitx, listings, xcolor
+NOT AVAILABLE: algorithms, algpseudocode, minted
+
+EXAMPLE OUTPUT: 
+\question Write fizzbuzz in C++.
+\begin{solution}
+\begin{lstlisting}
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 100; ++i) {
+        if (i % 3 == 0 && i % 5 == 0) {
+            std::cout << "FizzBuzz" << std::endl;
+        } else if (i % 3 == 0) {
+            std::cout << "Fizz" << std::endl;
+        } else if (i % 5 == 0) {
+            std::cout << "Buzz" << std::endl;
+        } else {
+            std::cout << i << std::endl;
+        }
+    }
+    return 0;
+}
+\end{lstlisting}
+\end{solution}
 """

@@ -18,10 +18,18 @@ import lazy_ai
 app = Flask(__name__)
 CORS(app, resources={r"/homework": {"origins": ["https://homeworkhero.io"]}})
 
-client = Client(
-    access_token=os.environ['SQUARE_ACCESS_TOKEN'],
-    environment='sandbox'
-)
+if constants.sand == True:
+    print("In sandbox mode!")
+    client = Client(
+        access_token=os.environ['SAND_SQUARE_ACCESS_TOKEN'],
+        environment='sandbox'
+    )
+else:
+    print("In prod!")
+    client = Client(
+        access_token=os.environ['PROD_SQUARE_ACCESS_TOKEN'],
+        environment='production'
+    )
 
 @app.route('/homework', methods=['POST'])
 def create_solution():
@@ -32,6 +40,7 @@ def create_solution():
         extension = file.filename.split('.')[-1]
         file.filename = "homework."+extension
         has_latex = utils.convert_str_to_bool(request.form['hasLatex'])
+        programminglanguage= request.form['programminglanguage']
         assignment_type = request.form['assignmentType'].upper()
         email = request.form['email']
         name = request.form['name']
@@ -39,6 +48,7 @@ def create_solution():
         title = request.form['title']
         print('Email: {}'.format(email))
         if file is not None and token is not None:
+            print("About to create payment response.")
             create_payment_response = client.payments.create_payment(
                 body={
                     'source_id': token,
@@ -49,11 +59,15 @@ def create_solution():
                     },
                 }
             )
+            print(f"Created payment response is: {create_payment_response.is_success()}.")
+            print(f"Created payment response is: {create_payment_response}.")
             if create_payment_response.is_success():
+                print("Created payment response is success.")
                 cd = clamd.ClamdNetworkSocket()
                 cd.__init__(host='localhost', port=3310, timeout=None)
                 scan_result = cd.instream(file)
                 if scan_result['stream'][0] == 'OK':
+                    print("scan_result is ok")
                     file.seek(0)
                     result = FileSchema().load(file)
                     uuid = str(uuid4())
@@ -63,6 +77,7 @@ def create_solution():
                                 "", uuid, name,
                                 document_title=title,
                                 latex=has_latex,
+                                programming_language=programminglanguage,
                                 assignment_type=assignment_type,
                                 extension=extension
                             )

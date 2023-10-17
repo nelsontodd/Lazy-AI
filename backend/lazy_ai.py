@@ -9,7 +9,7 @@ from reportlab.platypus import Spacer
 
 class LazyAI:
     def __init__(self, input_doc, output_pdf, document_description, username,
-            user_full_name, document_title="", latex=True, assignment_type="HOMEWORK",
+            user_full_name, document_title="", latex=True, programming_language="",assignment_type="HOMEWORK",
             extension=".pdf"):
         self.document_description = document_description
         self.document_title = document_title
@@ -28,6 +28,9 @@ class LazyAI:
         self.model="gpt-4-0613"
         self.solutions = None
         self.extension=extension
+        self.programming_language = programming_language
+        if self.programming_language != "":
+            self.latex = False
 
     def output_rel_path(self, filename, extension=""):
         os.makedirs(constants.output_path+self.username, exist_ok=True)
@@ -38,24 +41,30 @@ class LazyAI:
         return constants.input_path+self.username+"/"+filename+extension
 
     def extract_text_from_inputfile(self, doc_id=""):
-        if self.latex == True:
-            if (self.extension==".pdf") or (self.extension=="pdf"):
+        if (self.extension==".pdf") or (self.extension=="pdf"):
+            if (self.latex == True):
                 pdf_mmd = utils.mathpix_pdf_to_mmd(self.abs_path_input_doc, pdf_id=doc_id)
                 return pdf_mmd
             else:
-                image_mmd = utils.mathpix_img_to_mmd(self.abs_path_input_doc, img_id=doc_id)
-                return image_mmd
+                text = utils.read_pdf(self.abs_path_input_doc)
+                return text
         else:
-            text = utils.read_pdf(self.abs_path_input_doc)
-            return text
+            image_mmd = utils.mathpix_img_to_mmd(self.abs_path_input_doc, img_id=doc_id)
+            return image_mmd
 
     def determine_prompt_from_description(self):
         if self.assignment_type == "HOMEWORK" or self.assignment_type == "EXAM":
+            if self.programming_language != "":
+                return constants.NON_MATH_HOMEWORK + """NOTE: This is a programming
+            assignment! Output your code in {}""".format(self.programming_language)
             if self.latex == True:
                 return constants.MATH_HOMEWORK
             else:
                 return constants.NON_MATH_HOMEWORK
         else:
+            if self.programming_language != "":
+                return constants.NON_MATH_STUDYGUIDE + """NOTE: This is a programming
+            assignment! Output your code in {}""".format(self.programming_language)
             if self.latex == True:
                 return constants.MATH_STUDYGUIDE
             else:
@@ -75,6 +84,12 @@ class LazyAI:
             solutions = """
     \documentclass[answers]{{{}}}
     \\usepackage{{amssymb}}
+    \\usepackage{{amsmath}}
+    \\usepackage[utf8]{{inputenc}}
+    \\usepackage{{amsfonts}}
+    \\usepackage{{bm}}
+    \\usepackage{{esint}}
+    \\usepackage{{siunitx}}
 
     \\title{{{}}}
     \\author{{{}}}
