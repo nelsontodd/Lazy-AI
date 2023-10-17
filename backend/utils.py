@@ -247,7 +247,7 @@ def promptGPT(messages, model=constants.model, function_call=None,
     completion = 0
     i = 0
     numtokens = num_tokens_from_messages(messages)
-    timeout = 60 + (numtokens/1000.) * 150 #Guess
+    timeout = 100 + (numtokens/1000.) * 150 #Guess
     while (completion == 0):
         completion = promptGPT_functions(messages, function_call=function_call,
                 functions=functions, timeout=timeout, model=model, pl_tags=pl_tags,)
@@ -259,7 +259,7 @@ def promptGPT(messages, model=constants.model, function_call=None,
     return completion
 
 def promptGPT_functions(messages, model=constants.model, functions=None,
-        function_call=None, timeout=30, pl_tags=None):
+        function_call=None, timeout=30, pl_tags=[]):
     """
     systemprompt: text
     userprompt: text
@@ -277,6 +277,12 @@ def promptGPT_functions(messages, model=constants.model, functions=None,
     function_call: {"name": "name of function from functions to call"}
     """
     with requests.Session() as session:
+        response = openai.ChatCompletion.create(
+          model="gpt-3.5-turbo",
+          messages=[{'role':'user','content':'respond with one char.'}],
+          request_timeout=5,
+          temperature=0.0
+          )
         openai.requestssession = session
         try:
             print("""Inputting {} tokens into

@@ -12,6 +12,7 @@ const FileUploader = () => {
   const [hasLatex, setHasLatex] = useState(true);
   const [assignmentType, setAssignmentType] = useState("HOMEWORK");
   const [name, setName] = useState('');
+  const [programminglanguage, setProgrammingLanguage] = useState('');
   const [email, setEmail] = useState(null);
   const [processingSolution, setProcessingSolution] = useState(false);
   const [title, setTitle] = useState('');
@@ -38,6 +39,7 @@ const FileUploader = () => {
         formData.append('hasLatex', hasLatex);
         formData.append('assignmentType', assignmentType);
         formData.append('name', name);
+        formData.append('programminglanguage', programminglanguage);
         formData.append('email', email);
         formData.append('sourceId', token.token);
         formData.append('title', title);
@@ -117,12 +119,24 @@ const FileUploader = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   required
                 />
+                <p className="mt-3">
+                  <b>If this is a programming assignment, input the language below. (Leave blank if not).</b>
+                </p>
+                <Form.Control
+                  type="text"
+                  id="programminglanguage"
+                  value={programminglanguage}
+                  placeholder="Programming Language"
+                  onChange={(e) => setProgrammingLanguage(e.target.value)}
+                  required
+                />
               </div>
             </div>
           </Col>
           <Col xs={6}>
             <p className="mt-3">
-              <b>Does your assignment have LATEX (eg Mathematical) equations? (Example: Calculus, physics,chemistry, algebra, etc)</b>
+              <b>Does your assignment have equations? (Example: Latex, physics,
+                chemistry, etc)</b>
             </p>
             <Form.Check
               value={true}
@@ -169,7 +183,7 @@ const FileUploader = () => {
             />
             <h6 className="mt-3">Get solutions for $1</h6>
             <PaymentForm
-              applicationId="sandbox-sq0idb-VjaXQsDt014XTRq4IY14aw"
+              applicationId="sq0idp-Ik5Cdo6-ipbu5bdcDhQYqw"
               cardTokenizeResponseReceived={
                 (token, verifiedBuyer) => onSubmit(token, verifiedBuyer)
               }
