@@ -21,6 +21,10 @@ const Navigation = () => {
           &nbsp;
           &nbsp;
           &nbsp;
+          <Nav.Link href="/blog">Blog</Nav.Link>
+          &nbsp;
+          &nbsp;
+          &nbsp;
           <Button href="/homework" className="text-white">
             <b>Get Solutions</b>
           </Button>
